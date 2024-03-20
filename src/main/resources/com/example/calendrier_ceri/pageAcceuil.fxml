@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.calendrier_ceri.PageAcceuilController"
+            prefHeight="400.0" prefWidth="600.0">
+
+    <children>
+        <Label layoutX="264.0" layoutY="66.0" text="Calendar">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+        <Label layoutX="145.0" layoutY="138.0" text="Pseudo:" />
+        <TextField fx:id="pseudoField" layoutX="211.0" layoutY="134.0" />
+        <Label layoutX="145.0" layoutY="184.0" text="Mot de passe:" />
+        <PasswordField fx:id="passwordField" layoutX="249.0" layoutY="180.0" />
+        <Button layoutX="264.0" layoutY="234.0" mnemonicParsing="false" text="Connexion" onAction="#connexionAction" />
+    </children>
+
+</AnchorPane>
