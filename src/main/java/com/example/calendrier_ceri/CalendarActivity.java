@@ -3,46 +3,110 @@ package com.example.calendrier_ceri;
 import java.time.ZonedDateTime;
 
 public class CalendarActivity {
-    private ZonedDateTime date;
-    private String clientName;
-    private Integer serviceNo;
+    private ZonedDateTime startDateTime;
+    private ZonedDateTime endDateTime;
+    private String description;
+    private String location;
 
-    public CalendarActivity(ZonedDateTime date, String clientName, Integer serviceNo) {
-        this.date = date;
-        this.clientName = clientName;
-        this.serviceNo = serviceNo;
+    private String summary;
+
+    private String enseignant;
+    private String matiere;
+
+    private String salle;
+
+
+    public CalendarActivity(ZonedDateTime startDateTime,String summary,String enseignant,String matiere, ZonedDateTime endDateTime, String description, String location ,String salle) {
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.description = description;
+        this.location = location;
+        this.summary = summary;
+        this.enseignant= enseignant;
+        this.matiere= matiere;
+        this.salle=salle;
+    }
+    public CalendarActivity(ZonedDateTime zonedStartDateTime, ZonedDateTime zonedEndDateTime,String description, String loc){
+        this.startDateTime = zonedStartDateTime;
+        this.endDateTime = zonedEndDateTime;
+        this.description = description;
+        this.location = loc;
     }
 
-    public ZonedDateTime getDate() {
-        return date;
+    // Getters and Setters
+
+    public ZonedDateTime getStartDateTime() {
+        return startDateTime;
+    }
+    public String getSummary() {
+        return summary;
     }
 
-    public void setDate(ZonedDateTime date) {
-        this.date = date;
+    public String getSalle() {
+        return salle;
     }
 
-    public String getClientName() {
-        return clientName;
+    public void setSalle(String salle) {
+        this.salle = salle;
     }
 
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
+    public void setStartDateTime(ZonedDateTime startDateTime) {
+        this.startDateTime = startDateTime;
     }
 
-    public Integer getServiceNo() {
-        return serviceNo;
+    public ZonedDateTime getEndDateTime() {
+        return endDateTime;
     }
 
-    public void setServiceNo(Integer serviceNo) {
-        this.serviceNo = serviceNo;
+    public void setEndDateTime(ZonedDateTime endDateTime) {
+        this.endDateTime = endDateTime;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getMatiere() {
+        return matiere;
+    }
+    public void setMatiere(String matiere) {
+        this.matiere = matiere;
+    }
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+    public void setEnseignant(String enseignant) {
+        this.enseignant = enseignant;
+    }
+    public String getEnseignant() {
+        return enseignant;
+    }
+
+
+
+
+
+
 
     @Override
     public String toString() {
-        return "CalenderActivity{" +
-                "date=" + date +
-                ", clientName='" + clientName + '\'' +
-                ", serviceNo=" + serviceNo +
+        return "CalendarActivity{" +
+                "startDateTime=" + startDateTime +
+                ", endDateTime=" + endDateTime +
+                ", description='" + description + '\'' +
+                ", location='" + location + '\'' +
                 '}';
     }
 }

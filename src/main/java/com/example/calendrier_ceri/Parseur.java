@@ -2,12 +2,16 @@ package com.example.calendrier_ceri;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Parseur {
     void lireFichier(String nomFichier) {
@@ -25,10 +29,10 @@ public class Parseur {
             e.printStackTrace();
         }
     }
-    public static List<Evenement> parceFichier() {
-        List<Evenement> evenements = null;
+    public static List<CalendarActivity> parceFichier(String filename) {
+        List<CalendarActivity> evenements = null;
         try {
-            File file = new File("fichier_ics/m1_general.ics");
+            File file = new File("fichier_ics/"+filename);
             Scanner scanner = new Scanner(file);
             evenements = new ArrayList<>();
 
@@ -40,6 +44,10 @@ public class Parseur {
                     StringBuilder loc = new StringBuilder();
                     LocalDateTime dtStart = null;
                     LocalDateTime dtEnd = null;
+                    StringBuilder summary = new StringBuilder();
+                    StringBuilder enseignant = new StringBuilder();
+                    StringBuilder matiere = new StringBuilder();
+                    StringBuilder salle = new StringBuilder();
 
                     while (!line.startsWith("END:VEVENT")) {
                         if (line.startsWith("LOCATION")) {
@@ -49,6 +57,13 @@ public class Parseur {
                         if (line.startsWith("DESCRIPTION")) {
                             description.append(line.substring(line.indexOf(':') + 1));
                             line = readContinuedLines(scanner, description);
+                            enseignant.append(trouverEnseignant(description.toString()));
+                            matiere.append(trouverMatiere(description.toString()));
+                            salle.append(trouverSalle((description.toString())));
+                        }
+                        if (line.startsWith("SUMMARY")) {
+                            summary.append(line.substring(line.indexOf(':') + 1));
+                            line = readContinuedLines(scanner, summary);
                         }
                         if (line.startsWith("DTSTART:")) {
                             dtStart = LocalDateTime.ofEpochSecond(parseDateTime(line.substring("DTSTART:".length())), 0, ZoneOffset.UTC);
@@ -60,9 +75,10 @@ public class Parseur {
                             line = scanner.nextLine();
                         }
                     }
-
+                    ZonedDateTime zonedStartDateTime = toZonedDateTime(dtStart);
+                    ZonedDateTime zonedEndDateTime = toZonedDateTime(dtEnd);
                     // Affiche les informations de l'événement
-                    evenements.add(new Evenement(description.toString(), loc.toString(), dtStart, dtEnd));
+                    evenements.add(new CalendarActivity(zonedStartDateTime,summary.toString(),enseignant.toString(),matiere.toString(), zonedEndDateTime,description.toString(),loc.toString(),salle.toString()));
                 }
             }
             scanner.close();
@@ -72,7 +88,14 @@ public class Parseur {
         }
         return evenements; // Déplacer le return ici pour retourner tous les événements
     }
-
+    public static ZonedDateTime toZonedDateTime(LocalDateTime localDateTime) {
+        if (localDateTime == null) {
+            // Gérer le cas où localDateTime est null. Retourner null ou une valeur par défaut.
+            return null; // Ou utilisez une valeur par défaut si approprié
+        }
+        ZoneId zoneId = ZoneId.of("UTC"); // Ou un autre fuseau horaire approprié
+        return ZonedDateTime.of(localDateTime, zoneId);
+    }
     private static String readContinuedLines(Scanner scanner, StringBuilder output) {
         String line = "";
         while (scanner.hasNextLine()) {
@@ -86,7 +109,42 @@ public class Parseur {
         return line;
     }
 
+    public static String trouverEnseignant(String texte) {
+        // Utilisation d'une expression régulière pour trouver le nom de l'enseignant
+        Pattern pattern = Pattern.compile("Enseignant\\s*:\\s*([A-Za-z\\s]+)\\s*(?:\\\\n|$)");
+        Matcher matcher = pattern.matcher(texte);
 
+        if (matcher.find()) {
+            String enseignant = matcher.group(1).trim(); // Le premier groupe correspond au nom de l'enseignant
+            return enseignant;
+        } else {
+            return null;
+        }
+    }
+    public static String trouverMatiere(String texte) {
+        // Utilisation d'une expression régulière pour trouver le nom de la matière
+        Pattern pattern = Pattern.compile("Matière\\s*:\\s*([^\\\\]+)\\s*(?:\\\\n|$)");
+        Matcher matcher = pattern.matcher(texte);
+
+        if (matcher.find()) {
+            String matiere = matcher.group(1).trim(); // Le premier groupe correspond au nom de la matière
+            return matiere;
+        } else {
+            return null;
+        }
+    }
+    public static String trouverSalle(String texte) {
+        // Utilisation d'une expression régulière pour trouver le nom de la matière
+        Pattern pattern = Pattern.compile("Salle\\s*:\\s*([^\\\\]+)\\s*(?:\\\\n|$)");
+        Matcher matcher = pattern.matcher(texte);
+
+        if (matcher.find()) {
+            String matiere = matcher.group(1).trim(); // Le premier groupe correspond au nom de la matière
+            return matiere;
+        } else {
+            return null;
+        }
+    }
     private static long parseDateTime(String dateTimeStr) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
         LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, formatter);
@@ -101,15 +159,20 @@ public class Parseur {
         }
     }
 
-    public static void main(String[] args){
-        List<Evenement> evenements = parceFichier();
-        for (Evenement evenement : evenements) {
+    public static void main(String[] args) {
+        String filePath = "m1_general.ics";
+        List<CalendarActivity> activities = parceFichier(filePath);
+
+        for (CalendarActivity evenement : activities) {
+            System.out.println("Summary: " + evenement.getSummary());
             System.out.println("Description: " + evenement.getDescription());
-            System.out.println("Location: " + evenement.getLocation());
-            System.out.println("Start Time: " + formatDateTime(evenement.getDebut()));
-            System.out.println("End Time: " + formatDateTime(evenement.getFin()));
+            System.out.println("Enseignant: " + evenement.getEnseignant());
+            System.out.println("Matière: " + evenement.getMatiere());
+            System.out.println("Location: " + evenement.getSalle());
+            System.out.println("Start Time: " + (evenement.getStartDateTime()));
+            System.out.println("End Time: " + (evenement.getEndDateTime()));
+
             System.out.println("-------------------------------------------------");
         }
     }
 }
-
