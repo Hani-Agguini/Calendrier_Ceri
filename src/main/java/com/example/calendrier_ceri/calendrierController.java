@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -17,7 +18,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
+import javafx.application.HostServices;
+import java.awt.Desktop;
+import java.net.URI;
 import java.net.URL;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -26,6 +29,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.awt.Desktop;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import static com.example.calendrier_ceri.Parseur.parceFichier;
 
@@ -44,23 +51,53 @@ public class calendrierController implements Initializable {
     @FXML
     private FlowPane calendar;
 
-    List<CalendarActivity> allActivities = parceFichier("m1_alt.ics");
+    @FXML
+    private AnchorPane weekView;
+
+    @FXML
+    private FlowPane monthView;
+    @FXML
+    private StackPane calendarContainer;
+
+
+
+    List<CalendarActivity> allActivities = parceFichier("s8.ics");
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dateFocus = ZonedDateTime.now();
         today = ZonedDateTime.now();
-    }
-    @FXML
-    void backOneMonth(ActionEvent event) {
-        dateFocus = dateFocus.minusMonths(1);
         refreshCalendar();
+    }
+    private boolean isMonthView = true;
+    @FXML
+    void back(ActionEvent event) {
+        if (isMonthView) {
+            dateFocus = dateFocus.minusMonths(1);
+            refreshCalendar();
+        } else {
+            dateFocus = dateFocus.minusWeeks(1);
+            ZonedDateTime weekStart = dateFocus.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+            Map<Integer, List<CalendarActivity>> activitiesForWeek = getCalendarActivitiesWeek(weekStart, allActivities);
+            drawCalendarWeek(weekStart, activitiesForWeek);
+        }
+
     }
 
     @FXML
-    void forwardOneMonth(ActionEvent event) {
-        dateFocus = dateFocus.plusMonths(1);
-        refreshCalendar();
+    void forward(ActionEvent event) {
+        if (isMonthView) {
+            dateFocus = dateFocus.plusMonths(1);
+            refreshCalendar();
+        } else {
+            dateFocus = dateFocus.plusWeeks(1);
+            ZonedDateTime weekStart = dateFocus.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+            Map<Integer, List<CalendarActivity>> activitiesForWeek = getCalendarActivitiesWeek(weekStart, allActivities);
+            drawCalendarWeek(weekStart, activitiesForWeek);
+        }
+
     }
+
+
 
     @FXML
     void backOneWeek(ActionEvent event) {
@@ -78,6 +115,8 @@ public class calendrierController implements Initializable {
     }
     @FXML
     void showWeekView(ActionEvent event) {
+        isMonthView = false;
+        calendar.getChildren().clear();
         ZonedDateTime weekStart = dateFocus.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         Map<Integer, List<CalendarActivity>> activitiesForWeek = getCalendarActivitiesWeek(weekStart, allActivities);
         drawCalendarWeek(weekStart, activitiesForWeek);
@@ -85,6 +124,8 @@ public class calendrierController implements Initializable {
 
     @FXML
     void showMonthView(ActionEvent event) {
+        isMonthView = true;
+        calendar.getChildren().clear();
         refreshCalendar();
     }
 
@@ -200,6 +241,8 @@ public class calendrierController implements Initializable {
     }
     void drawCalendarWeek(ZonedDateTime weekStart, Map<Integer, List<CalendarActivity>> activitiesForWeek) {
         calendar.getChildren().clear();
+        year.setText(String.valueOf(weekStart.getYear()));
+        month.setText(weekStart.format(DateTimeFormatter.ofPattern(" 'Semaine' w")));
         double calendarWidth = calendar.getPrefWidth();
         double calendarHeight = calendar.getPrefHeight();
         double strokeWidth = 1;
@@ -231,6 +274,24 @@ public class calendrierController implements Initializable {
                 activityDetails.setStyle("-fx-border-color: lightgray; -fx-border-width: 1; -fx-background-color: #f9f9f9;");
                 Label matiere = new Label("Matière: " + activity.getMatiere());
                 Label enseignant = new Label("Enseignant: " + activity.getEnseignant());
+                enseignant.setOnMouseClicked(e -> {
+                    if (Desktop.isDesktopSupported()) {
+                        try {
+                            Desktop desktop = Desktop.getDesktop();
+                            if (desktop.isSupported(Desktop.Action.MAIL)) {
+                                // Assurez-vous que l'adresse e-mail et le sujet sont correctement encodés.
+                                String email = URLEncoder.encode(activity.getEnseignant(), StandardCharsets.UTF_8.toString());
+                                String subject = URLEncoder.encode("Sujet du message", StandardCharsets.UTF_8.toString());
+                                String body = URLEncoder.encode("Corps du message", StandardCharsets.UTF_8.toString());
+
+                                URI mailto = new URI("mailto:" + email + "?subject=" + subject + "&body=" + body);
+                                desktop.mail(mailto);
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
                 Label location = new Label("Location: " + activity.getSalle());
                 Label startDateTime = new Label("Début: " + activity.getStartDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
                 Label endDateTime = new Label("Fin: " + activity.getEndDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));

@@ -6,38 +6,38 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="642.0" prefWidth="744.0" style="-fx-background-color: #f2fafc;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.calendrier_ceri.calendrierController">
-<FlowPane fx:id="calendar" hgap="10.0" layoutX="14.0" layoutY="116.0" prefHeight="498.0" prefWidth="716.0" vgap="5.0" />
-<HBox alignment="CENTER" layoutX="3.0" layoutY="14.0" prefHeight="74.0" prefWidth="750.0" spacing="5.0">
-    <children>
-         <Button mnemonicParsing="false" onAction="#showWeekView" text="showWeekView" />
-        <Button mnemonicParsing="false" onAction="#backOneMonth" text="&lt;" />
-        <Text fx:id="year" strokeType="OUTSIDE" strokeWidth="0.0" text="####">
-            <font>
-                <Font size="22.0" />
-            </font>
-        </Text>
-        <Text fx:id="month" strokeType="OUTSIDE" strokeWidth="0.0" text="####">
-            <font>
-                <Font size="22.0" />
-            </font>
-        </Text>
-        <Button mnemonicParsing="false" onAction="#forwardOneMonth" text="&gt;" />
-         <Button fx:id="showMonthView" mnemonicParsing="false" onAction="#showMonthView" text="showMonthView" />
-    </children>
-</HBox>
-<HBox alignment="CENTER" layoutY="78.0" prefHeight="44.0" prefWidth="749.0" spacing="88.75">
-    <children>
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lu" textAlignment="CENTER" />
-        <Text layoutX="213.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mar" textAlignment="CENTER" />
-        <Text layoutX="222.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mer" textAlignment="CENTER" />
-        <Text layoutX="232.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jeu" textAlignment="CENTER" />
-        <Text layoutX="241.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ven" textAlignment="CENTER" />
-        <Text layoutX="251.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sam" textAlignment="CENTER" />
-        <Text layoutX="266.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dim" textAlignment="CENTER" />
-    </children>
-    <padding>
-        <Insets right="9.0" />
-    </padding>
-</HBox>
+    <FlowPane fx:id="calendar" hgap="10.0" layoutX="14.0" layoutY="116.0" prefHeight="498.0" prefWidth="716.0" vgap="5.0" />
+    <HBox alignment="CENTER" layoutX="3.0" layoutY="14.0" prefHeight="74.0" prefWidth="750.0" spacing="5.0">
+        <children>
+            <Button mnemonicParsing="false" onAction="#showWeekView" text="showWeekView" />
+            <Button mnemonicParsing="false" onAction="#back" text="&lt;" />
+            <Text fx:id="year" strokeType="OUTSIDE" strokeWidth="0.0" text="####">
+                <font>
+                    <Font size="22.0" />
+                </font>
+            </Text>
+            <Text fx:id="month" strokeType="OUTSIDE" strokeWidth="0.0" text="####">
+                <font>
+                    <Font size="22.0" />
+                </font>
+            </Text>
+            <Button mnemonicParsing="false" onAction="#forward" text="&gt;" />
+            <Button fx:id="showMonthView" mnemonicParsing="false" onAction="#showMonthView" text="showMonthView" />
+        </children>
+    </HBox>
+    <HBox alignment="CENTER" layoutY="78.0" prefHeight="44.0" prefWidth="749.0" spacing="88.75">
+        <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lu" textAlignment="CENTER" />
+            <Text layoutX="213.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mar" textAlignment="CENTER" />
+            <Text layoutX="222.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mer" textAlignment="CENTER" />
+            <Text layoutX="232.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jeu" textAlignment="CENTER" />
+            <Text layoutX="241.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ven" textAlignment="CENTER" />
+            <Text layoutX="251.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sam" textAlignment="CENTER" />
+            <Text layoutX="266.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dim" textAlignment="CENTER" />
+        </children>
+        <padding>
+            <Insets right="9.0" />
+        </padding>
+    </HBox>
 
 </AnchorPane>
