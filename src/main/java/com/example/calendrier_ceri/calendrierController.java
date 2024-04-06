@@ -2,9 +2,12 @@ package com.example.calendrier_ceri;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -19,7 +22,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.awt.Desktop;
+import java.awt.*;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.time.DayOfWeek;
@@ -29,6 +33,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static com.example.calendrier_ceri.Parseur.parceFichier;
 
@@ -57,6 +62,9 @@ public class calendrierController implements Initializable {
     @FXML
     private AnchorPane calendrierPane;
 
+    @FXML
+    private Button retur;
+
     private void applyDarkMode(boolean isDarkMode) {
         if (calendrierPane != null) {
             if (isDarkMode) {
@@ -67,6 +75,23 @@ public class calendrierController implements Initializable {
                 calendrierPane.getStyleClass().add("style");
             }
         }
+    }
+    public void choix_formation(ActionEvent event) throws IOException {
+        System.out.println("Choix de formation");
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+        double width = stage.getWidth();
+        double height = stage.getHeight();
+
+        Parent connexionView = FXMLLoader.load(getClass().getResource("choix_Formations.fxml"));
+
+        Scene choixView = new Scene(connexionView, width, height);
+
+        // Appliquer la nouvelle scène au stage (fenêtre) existant sans changer la taille
+        stage.setScene(choixView);
+
+
+        stage.show();
     }
     private String formationFileName;
     private List<CalendarActivity> allActivities = new ArrayList<>();

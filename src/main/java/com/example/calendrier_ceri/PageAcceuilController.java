@@ -56,6 +56,7 @@ public class PageAcceuilController implements Initializable {
 
     @FXML
     private void dark_mode(ActionEvent event) {
+        System.out.println("Changement de mode sombre");
         ThemeManager.toggleDarkMode();
     }
 

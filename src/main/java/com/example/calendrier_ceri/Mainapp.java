@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 
 public class Mainapp extends Application {
     static int dim1=800;
-    static int dim2=800;
+    static int dim2=600;
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("pageAcceuil.fxml"));

@@ -17,7 +17,7 @@
                     <Font size="22.0" />
                 </font>
             </Label>
-            <Label fx:id="month"  text="####">
+            <Label fx:id="month" text="####">
                 <font>
                     <Font size="22.0" />
                 </font>
@@ -40,6 +40,8 @@
             <Insets right="9.0" />
         </padding>
     </HBox>
+    <Button mnemonicParsing="false" text="choix de l emploie du temps" onAction="#choix_formation" styleClass="button"
+            AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0"/>
     <stylesheets>
         <URL value="@style.css" />
     </stylesheets>
