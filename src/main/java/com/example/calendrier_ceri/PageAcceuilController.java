@@ -1,6 +1,5 @@
 package com.example.calendrier_ceri;
 
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,44 +11,42 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PageAcceuilController implements Initializable {
 
-
     @FXML
     private TextField pseudoField;
     @FXML
     private PasswordField passwordField;
-
     @FXML
     private AnchorPane acceuilPane;
-
 
     @FXML
     private void connexionAction(ActionEvent event) throws IOException {
         String pseudo = pseudoField.getText();
         String motDePasse = passwordField.getText();
         Connexion connexion = new Connexion();
-        if (connexion.verifier_utilisateur(pseudo,motDePasse)){
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        boolean isProf = connexion.verifier_prof(pseudo, motDePasse);
 
+        if (connexion.verifier_utilisateur(pseudo, motDePasse) || isProf) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("choix_Formations.fxml"));
+            Parent root = loader.load();
+            choix_Formations controller = loader.getController();
+            controller.isProf=isProf;
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             double width = stage.getWidth();
             double height = stage.getHeight();
-
-            Parent connexionView = FXMLLoader.load(getClass().getResource("choix_Formations.fxml"));
-
-            Scene choixView = new Scene(connexionView, width, height);
-
+            Scene choixView = new Scene(root, width, height);
             // Appliquer la nouvelle scène au stage (fenêtre) existant sans changer la taille
             stage.setScene(choixView);
 
 
             stage.show();
-        }else {
+            stage.show();
+        } else {
             System.out.println("Connexion pas réussie");
         }
     }

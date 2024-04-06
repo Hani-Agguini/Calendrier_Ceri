@@ -15,8 +15,14 @@ public class CalendarActivity {
 
     private String salle;
 
+    private boolean isExam;
 
-    public CalendarActivity(ZonedDateTime startDateTime,String summary,String enseignant,String matiere, ZonedDateTime endDateTime, String description, String location ,String salle) {
+
+    public boolean isExam() {
+        return isExam;
+    }
+
+    public CalendarActivity(ZonedDateTime startDateTime, String summary, String enseignant, String matiere, ZonedDateTime endDateTime, String description, String location , String salle, boolean isExam) {
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.description = description;
@@ -25,6 +31,7 @@ public class CalendarActivity {
         this.enseignant= enseignant;
         this.matiere= matiere;
         this.salle=salle;
+        this.isExam=isExam;
     }
     public CalendarActivity(ZonedDateTime zonedStartDateTime, ZonedDateTime zonedEndDateTime,String description, String loc){
         this.startDateTime = zonedStartDateTime;

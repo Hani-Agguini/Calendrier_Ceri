@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import java.net.URL?>
-
-<AnchorPane fx:id="acceuilPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.calendrier_ceri.PageAcceuilController" styleClass="style">
-
-    <!-- VBox for centering the login form -->
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.calendrier_ceri.PageAcceuilController" styleClass="style">
     <VBox alignment="CENTER" AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0"
           AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" spacing="20" styleClass="login-vbox">
         <Label text="Calendar" styleClass="title-label" />
@@ -24,8 +22,6 @@
     <!-- Button for toggling dark mode, positioned at the bottom right of the AnchorPane -->
     <Button mnemonicParsing="false" text="Dark" onAction="#dark_mode" styleClass="button"
             AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0"/>
-
-    <!-- Stylesheet for the scene -->
     <stylesheets>
         <URL value="@style.css" />
     </stylesheets>

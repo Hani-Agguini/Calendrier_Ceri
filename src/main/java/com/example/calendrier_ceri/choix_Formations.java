@@ -19,12 +19,11 @@ import java.util.ResourceBundle;
 
 public class choix_Formations implements Initializable {
 
-
     @FXML
     private ToggleGroup uniqueToggleGroup;
     @FXML
     private AnchorPane choixPane;
-
+    boolean isProf =false;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         applyDarkMode(ThemeManager.darkModeActiveProperty().get());
@@ -57,6 +56,7 @@ public class choix_Formations implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("calendrier.fxml"));
             Parent root = loader.load();
             calendrierController controller = loader.getController();
+            controller.setProfVisibility(isProf);
             controller.setFormation(formation); // Passez la formation choisie
 
             // Affichez le calendrier

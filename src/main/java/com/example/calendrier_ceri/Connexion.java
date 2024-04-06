@@ -54,17 +54,20 @@ public class Connexion {
         return false;
     }
 
-    boolean verifier_prof(String pseudo , String MotDePasse){
+    boolean verifier_prof(String pseudo, String motDePasse) {
         List<Utilisateur> utilisateurs = lire_fichier("logging.txt");
         for (Utilisateur utilisateur : utilisateurs) {
-            if (utilisateur.pseudo.equals(pseudo) && utilisateur.motDePasse.equals(MotDePasse)&& utilisateur.type=="ENS") {
-                System.out.println("Connexion réussie.");
-                return  true;
+            if (utilisateur.pseudo.equals(pseudo) && utilisateur.motDePasse.equals(motDePasse) && utilisateur.type.equals("ENS")) {
+                System.out.println("Connexion réussie pour un prof.");
+                return true;
             }
         }
         System.out.println("Connexion échouée.");
         return false;
+    }
 
-
+    public static void main(String[] args) {
+        Connexion connexion = new Connexion();
+        System.out.println(connexion.verifier_utilisateur("hani", "2000"));
     }
 }

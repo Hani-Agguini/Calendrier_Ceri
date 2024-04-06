@@ -48,6 +48,7 @@ public class Parseur {
                     StringBuilder enseignant = new StringBuilder();
                     StringBuilder matiere = new StringBuilder();
                     StringBuilder salle = new StringBuilder();
+                    boolean isExam = false;
 
                     while (!line.startsWith("END:VEVENT")) {
                         if (line.startsWith("LOCATION")) {
@@ -70,15 +71,18 @@ public class Parseur {
                         }
                         if (line.startsWith("DTEND:")) {
                             dtEnd = LocalDateTime.ofEpochSecond(parseDateTime(line.substring("DTEND:".length())), 0, ZoneOffset.UTC);
+                        }if (line.startsWith("ISEXAM")) {
+                            isExam = Boolean.parseBoolean(line.split(":")[1].trim());
                         }
                         if (!line.startsWith("END:VEVENT") && scanner.hasNextLine()) {
                             line = scanner.nextLine();
                         }
+
                     }
                     ZonedDateTime zonedStartDateTime = toZonedDateTime(dtStart);
                     ZonedDateTime zonedEndDateTime = toZonedDateTime(dtEnd);
                     // Affiche les informations de l'événement
-                    evenements.add(new CalendarActivity(zonedStartDateTime,summary.toString(),enseignant.toString(),matiere.toString(), zonedEndDateTime,description.toString(),loc.toString(),salle.toString()));
+                    evenements.add(new CalendarActivity(zonedStartDateTime,summary.toString(),enseignant.toString(),matiere.toString(), zonedEndDateTime,description.toString(),loc.toString(),salle.toString(),isExam));
                 }
             }
             scanner.close();
@@ -156,6 +160,23 @@ public class Parseur {
             return dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         } else {
             return "Non spécifié";
+        }
+    }
+
+    public static void main(String[] args) {
+        String filePath = "prof.ics";
+        List<CalendarActivity> activities = parceFichier(filePath);
+
+        for (CalendarActivity evenement : activities) {
+            System.out.println("Summary: " + evenement.getSummary());
+            System.out.println("Description: " + evenement.getDescription());
+            System.out.println("Enseignant: " + evenement.getEnseignant());
+            System.out.println("Matière: " + evenement.getMatiere());
+            System.out.println("Location: " + evenement.getSalle());
+            System.out.println("Start Time: " + (evenement.getStartDateTime()));
+            System.out.println("End Time: " + (evenement.getEndDateTime()));
+
+            System.out.println("-------------------------------------------------");
         }
     }
 }

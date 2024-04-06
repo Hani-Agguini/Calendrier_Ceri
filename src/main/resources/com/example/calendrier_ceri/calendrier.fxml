@@ -17,7 +17,8 @@
                     <Font size="22.0" />
                 </font>
             </Label>
-            <Label fx:id="month" text="####">
+
+            <Label fx:id="month"  text="####">
                 <font>
                     <Font size="22.0" />
                 </font>
@@ -45,6 +46,7 @@
     <stylesheets>
         <URL value="@style.css" />
     </stylesheets>
+    <Button fx:id="ajouterEvenementBtn" text="Ajouter Événement" onAction="#ajouterEvenementAction" visible="false"/>
 
 
 </AnchorPane>
