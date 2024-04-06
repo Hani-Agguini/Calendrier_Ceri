@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.geometry.Insets?>
 
-<?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.layout.FlowPane?>
-<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.calendrier_ceri.choix_Formations">
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.calendrier_ceri.choix_Formations">
     <FlowPane fx:id="calendar" hgap="10.0" layoutX="14.0" layoutY="116.0" prefHeight="498.0" prefWidth="716.0" vgap="5.0" />
 
-    <VBox spacing="10" alignment="TOP_CENTER" layoutX="50" layoutY="50">
+    <VBox alignment="TOP_CENTER" layoutX="50" layoutY="50" spacing="10">
         <padding>
-            <Insets top="20" right="20" bottom="20" left="20" />
+            <Insets bottom="20" left="20" right="20" top="20" />
         </padding>
         <fx:define>
-            <ToggleGroup fx:id="toggleGroup"/>
+            <ToggleGroup fx:id="toggleGroup" />
         </fx:define>
-        <RadioButton fx:id="formation1" text="m1_general" toggleGroup="$toggleGroup"/>
-        <RadioButton fx:id="formation2" text="Formation 2" toggleGroup="$toggleGroup"/>
-        <RadioButton fx:id="formation3" text="Formation 3" toggleGroup="$toggleGroup"/>
-        <RadioButton fx:id="formation4" text="Formation 4" toggleGroup="$toggleGroup"/>
-        <Button text="Confirmer" onAction="#handleConfirmSelection"/>
+        <RadioButton fx:id="formation1" text="m1_general">
+         <toggleGroup>
+            <ToggleGroup fx:id="toggleGroup" />
+         </toggleGroup></RadioButton>
+        <RadioButton fx:id="formation2" text="m1_alt" toggleGroup="$toggleGroup" />
+        <RadioButton fx:id="formation3" text="prof" toggleGroup="$toggleGroup" />
+        <RadioButton fx:id="formation4" text="s8" toggleGroup="$toggleGroup" />
+        <Button onAction="#handleConfirmSelection" text="Confirmer" />
     </VBox>
 
 </AnchorPane>
-
-

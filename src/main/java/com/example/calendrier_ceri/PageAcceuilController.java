@@ -33,7 +33,7 @@ public class PageAcceuilController extends Application {
         // Appeler votre fonction avec le pseudo et le mot de passe
         Connexion connexion = new Connexion();
         if (connexion.verifier_utilisateur(pseudo,motDePasse)){
-            Parent monthView = FXMLLoader.load(getClass().getResource("calendrier.fxml"));
+            Parent monthView = FXMLLoader.load(getClass().getResource("choix_Formations.fxml"));
             Scene monthScene = new Scene(monthView);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(monthScene);

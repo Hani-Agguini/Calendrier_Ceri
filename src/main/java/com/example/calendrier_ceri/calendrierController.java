@@ -1,6 +1,5 @@
 package com.example.calendrier_ceri;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -60,40 +59,31 @@ public class calendrierController implements Initializable {
     Connexion connexion =new Connexion();
     choix_Formations formations=new choix_Formations();
     String formation=formations.getFormation();*/
+    private String formationFileName;
+    private List<CalendarActivity> allActivities = new ArrayList<>();
 
-    public  String formation;
+    public void setFormation(String formation) {
+        this.formationFileName = formation+ ".ics";
+        loadActivities(); // Assurez-vous que cette méthode charge les activités et met à jour l'interface utilisateur en conséquence
+    }
+    private void loadActivities() {
+        if (formationFileName != null && !formationFileName.isEmpty()) {
+            allActivities = parceFichier(formationFileName);
+            refreshCalendar(); // Met à jour le calendrier avec les nouvelles activités
+        } else {
+            System.out.println("Le nom du fichier de formation n'est pas défini.");
+        }
+    }
 
     @FXML
     private ToggleGroup toggleGroup;
 
-    List<CalendarActivity> allActivities;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dateFocus = ZonedDateTime.now();
         today = ZonedDateTime.now();
-
-        // Assurez-vous que cette partie est appelée après l'initialisation des composants FXML.
-        Platform.runLater(() -> {
-            String formations = getFormation();
-            if(formations != null) {
-                allActivities = parceFichier(formations + ".ics");
-                refreshCalendar();
-            }
-        });
-    }
-
-    public String getFormation() {
-
-        RadioButton selectedFormation = (RadioButton) toggleGroup.getSelectedToggle();
-        if (selectedFormation != null) {
-            String formation = selectedFormation.getText();
-            System.out.println("Formation sélectionnée : " + formation);
-            return formation;
-        } else {
-            System.out.println("Aucune formation n'a été sélectionnée.");
-            return null;
-        }
+        refreshCalendar();
     }
     private boolean isMonthView = true;
     @FXML
@@ -123,8 +113,6 @@ public class calendrierController implements Initializable {
         }
 
     }
-
-
 
     @FXML
     void backOneWeek(ActionEvent event) {
