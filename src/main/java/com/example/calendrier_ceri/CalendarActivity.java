@@ -91,11 +91,14 @@ public class CalendarActivity {
         this.enseignant = enseignant;
     }
     public String getEnseignant() {
+
         return enseignant;
     }
 
 
-
+    public String getEmailEnseignant(){
+        return getEnseignant()+"@univ-avignon.fr";
+    }
 
 
 

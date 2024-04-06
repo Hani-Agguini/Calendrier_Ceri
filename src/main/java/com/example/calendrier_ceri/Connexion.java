@@ -42,16 +42,30 @@ public class Connexion {
         }
         return utilisateurs;
     }
-    String verifier_utilisateur(String pseudo, String motDePasse) {
+    boolean verifier_utilisateur(String pseudo, String motDePasse) {
         List<Utilisateur> utilisateurs = lire_fichier("logging.txt");
         for (Utilisateur utilisateur : utilisateurs) {
             if (utilisateur.pseudo.equals(pseudo) && utilisateur.motDePasse.equals(motDePasse)) {
                 System.out.println("Connexion réussie.");
-                return utilisateur.type;
+                return true ;
             }
         }
         System.out.println("Connexion échouée.");
-        return "non";
+        return false;
+    }
+
+    boolean verifier_prof(String pseudo , String MotDePasse){
+        List<Utilisateur> utilisateurs = lire_fichier("logging.txt");
+        for (Utilisateur utilisateur : utilisateurs) {
+            if (utilisateur.pseudo.equals(pseudo) && utilisateur.motDePasse.equals(MotDePasse)&& utilisateur.type=="ENS") {
+                System.out.println("Connexion réussie.");
+                return  true;
+            }
+        }
+        System.out.println("Connexion échouée.");
+        return false;
+
+
     }
 
     public static void main(String[] args) {

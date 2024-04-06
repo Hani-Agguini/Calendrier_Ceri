@@ -3,10 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.calendrier_ceri.PageAcceuilController"
-            prefHeight="400.0" prefWidth="600.0">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.calendrier_ceri.PageAcceuilController">
+    <FlowPane fx:id="calendar" hgap="10.0" layoutX="14.0" layoutY="116.0" prefHeight="498.0" prefWidth="716.0" vgap="5.0" />
 
     <children>
         <Label layoutX="264.0" layoutY="66.0" text="Calendar">

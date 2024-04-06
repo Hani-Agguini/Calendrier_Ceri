@@ -1,5 +1,6 @@
 package com.example.calendrier_ceri;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -7,30 +8,26 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.application.HostServices;
+
 import java.awt.Desktop;
 import java.net.URI;
 import java.net.URL;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
-import java.awt.Desktop;
-import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -59,14 +56,44 @@ public class calendrierController implements Initializable {
     @FXML
     private StackPane calendarContainer;
 
+/*
+    Connexion connexion =new Connexion();
+    choix_Formations formations=new choix_Formations();
+    String formation=formations.getFormation();*/
 
+    public  String formation;
 
-    List<CalendarActivity> allActivities = parceFichier("s8.ics");
+    @FXML
+    private ToggleGroup toggleGroup;
+
+    List<CalendarActivity> allActivities;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dateFocus = ZonedDateTime.now();
         today = ZonedDateTime.now();
-        refreshCalendar();
+
+        // Assurez-vous que cette partie est appelée après l'initialisation des composants FXML.
+        Platform.runLater(() -> {
+            String formations = getFormation();
+            if(formations != null) {
+                allActivities = parceFichier(formations + ".ics");
+                refreshCalendar();
+            }
+        });
+    }
+
+    public String getFormation() {
+
+        RadioButton selectedFormation = (RadioButton) toggleGroup.getSelectedToggle();
+        if (selectedFormation != null) {
+            String formation = selectedFormation.getText();
+            System.out.println("Formation sélectionnée : " + formation);
+            return formation;
+        } else {
+            System.out.println("Aucune formation n'a été sélectionnée.");
+            return null;
+        }
     }
     private boolean isMonthView = true;
     @FXML
@@ -259,7 +286,15 @@ public class calendrierController implements Initializable {
             calendar.getChildren().add(dateCell);
         }
     }
+    public String formatTeacherEmail(String fullName) {
 
+        String emailName = fullName.toLowerCase();
+
+        emailName = emailName.replace(" ", ".");
+
+
+        return emailName;
+    }
     private void openActivityDetailsWindow(ZonedDateTime date, List<CalendarActivity> activities) {
         try {
             Stage stage = new Stage();
@@ -280,11 +315,13 @@ public class calendrierController implements Initializable {
                             Desktop desktop = Desktop.getDesktop();
                             if (desktop.isSupported(Desktop.Action.MAIL)) {
                                 // Assurez-vous que l'adresse e-mail et le sujet sont correctement encodés.
-                                String email = URLEncoder.encode(activity.getEnseignant(), StandardCharsets.UTF_8.toString());
+                                String nomens = formatTeacherEmail(activity.getEnseignant());
+                                String mail =nomens+"@univ-avignon.fr";
+                                String email = URLEncoder.encode(mail, StandardCharsets.UTF_8.toString());
                                 String subject = URLEncoder.encode("Sujet du message", StandardCharsets.UTF_8.toString());
                                 String body = URLEncoder.encode("Corps du message", StandardCharsets.UTF_8.toString());
 
-                                URI mailto = new URI("mailto:" + email + "?subject=" + subject + "&body=" + body);
+                                URI mailto = new URI("mailto:" + email);
                                 desktop.mail(mailto);
                             }
                         } catch (Exception ex) {
