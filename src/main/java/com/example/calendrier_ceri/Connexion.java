@@ -67,9 +67,4 @@ public class Connexion {
 
 
     }
-
-    public static void main(String[] args) {
-        Connexion connexion = new Connexion();
-        System.out.println(connexion.verifier_utilisateur("hani", "2000"));
-    }
 }

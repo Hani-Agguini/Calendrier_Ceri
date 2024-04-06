@@ -158,21 +158,4 @@ public class Parseur {
             return "Non spécifié";
         }
     }
-
-    public static void main(String[] args) {
-        String filePath = "prof.ics";
-        List<CalendarActivity> activities = parceFichier(filePath);
-
-        for (CalendarActivity evenement : activities) {
-            System.out.println("Summary: " + evenement.getSummary());
-            System.out.println("Description: " + evenement.getDescription());
-            System.out.println("Enseignant: " + evenement.getEnseignant());
-            System.out.println("Matière: " + evenement.getMatiere());
-            System.out.println("Location: " + evenement.getSalle());
-            System.out.println("Start Time: " + (evenement.getStartDateTime()));
-            System.out.println("End Time: " + (evenement.getEndDateTime()));
-
-            System.out.println("-------------------------------------------------");
-        }
-    }
 }

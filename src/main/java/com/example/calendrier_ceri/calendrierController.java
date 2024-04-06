@@ -39,10 +39,10 @@ public class calendrierController implements Initializable {
     ZonedDateTime today;
 
     @FXML
-    private Text year;
+    private Label year;
 
     @FXML
-    private Text month;
+    private Label month;
 
     @FXML
     private FlowPane calendar;
@@ -54,11 +54,20 @@ public class calendrierController implements Initializable {
     private FlowPane monthView;
     @FXML
     private StackPane calendarContainer;
+    @FXML
+    private AnchorPane calendrierPane;
 
-/*
-    Connexion connexion =new Connexion();
-    choix_Formations formations=new choix_Formations();
-    String formation=formations.getFormation();*/
+    private void applyDarkMode(boolean isDarkMode) {
+        if (calendrierPane != null) {
+            if (isDarkMode) {
+                calendrierPane.getStyleClass().remove("style");
+                calendrierPane.getStyleClass().add("dark-mode");
+            } else {
+                calendrierPane.getStyleClass().remove("dark-mode");
+                calendrierPane.getStyleClass().add("style");
+            }
+        }
+    }
     private String formationFileName;
     private List<CalendarActivity> allActivities = new ArrayList<>();
 
@@ -84,6 +93,11 @@ public class calendrierController implements Initializable {
         dateFocus = ZonedDateTime.now();
         today = ZonedDateTime.now();
         refreshCalendar();
+
+        applyDarkMode(ThemeManager.darkModeActiveProperty().get());
+        ThemeManager.darkModeActiveProperty().addListener((obs, oldVal, isDarkMode) -> {
+            applyDarkMode(isDarkMode);
+        });
     }
     private boolean isMonthView = true;
     @FXML
