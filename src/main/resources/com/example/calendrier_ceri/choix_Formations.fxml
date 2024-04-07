@@ -20,13 +20,15 @@
 
             <!-- Schedule Options -->
             <RadioButton text="s8" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <RadioButton text="amphi_ada" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="0" GridPane.rowIndex="2" />
             <RadioButton text="m1_alt" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <RadioButton text="m1_general" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <RadioButton text="prof" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <RadioButton text="m1_general" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <RadioButton text="prof" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <RadioButton text="hani" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="2" GridPane.rowIndex="2" />
             <!-- Add more RadioButtons for each category as needed -->
 
             <!-- Confirm Button -->
-            <Button onAction="#handleConfirmSelection" text="Confirmer" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Button onAction="#handleConfirmSelection" text="Confirmer" GridPane.columnIndex="1" GridPane.rowIndex="4" />
         </GridPane>
     </children>
     <stylesheets>

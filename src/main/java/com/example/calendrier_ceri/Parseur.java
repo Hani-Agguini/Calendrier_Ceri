@@ -164,7 +164,7 @@ public class Parseur {
     }
 
     public static void main(String[] args) {
-        String filePath = "m1_general.ics";
+        String filePath = "amphi_ada.ics";
         List<CalendarActivity> activities = parceFichier(filePath);
 
         for (CalendarActivity evenement : activities) {
