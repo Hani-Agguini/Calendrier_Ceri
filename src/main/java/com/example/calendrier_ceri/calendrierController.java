@@ -149,16 +149,13 @@ public class calendrierController implements Initializable {
         dateFocus = ZonedDateTime.now();
         today = ZonedDateTime.now();
         List<String> matieres = Arrays.asList("","ANGLAIS", "ANAGEMENT PAR LES PROC", "GESTION DE PROJET","APPLICATION DE MSI");
-        List<String> groupes = Arrays.asList("Groupe A", "Groupe B", "Groupe C");
         List<String> salles = Arrays.asList("","Amphi Ada", "Amphi Blaise");
         List<String> typesCours = Arrays.asList("","TP","TD","CM");
 
         comboMatiere.getItems().setAll(matieres);
-        comboGroupe.getItems().setAll(groupes);
         comboSalle.getItems().setAll(salles);
         comboTypeCours.getItems().setAll(typesCours);
         comboMatiere.valueProperty().addListener((obs, oldVal, newVal) -> updateCalendarView());
-        comboGroupe.valueProperty().addListener((obs, oldVal, newVal) -> updateCalendarView());
         comboSalle.valueProperty().addListener((obs, oldVal, newVal) -> updateCalendarView());
         comboTypeCours.valueProperty().addListener((obs, oldVal, newVal) -> updateCalendarView());
         refreshCalendar();
@@ -198,8 +195,7 @@ public class calendrierController implements Initializable {
 
         return allActivities.stream()
                 .filter(activity -> matiere == null || matiere.isEmpty() || activity.getMatiere().contains(matiere))
-                .filter(activity -> groupe == null || groupe.isEmpty() || activity.getMatiere().contains(groupe))
-                .filter(activity -> salle == null || salle.isEmpty() || activity.getLocation().contains(salle))
+                .filter(activity -> salle == null || salle.isEmpty() || activity.getDescription().contains(salle))
                 .filter(activity -> typeCours == null || typeCours.isEmpty() || activity.getSummary().contains(typeCours))
                 .collect(Collectors.toList());
     }
@@ -261,7 +257,7 @@ public class calendrierController implements Initializable {
             drawCalendar(dateFocus, activitiesForMonth);
         } else {
             ZonedDateTime weekStart = dateFocus.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-            Map<Integer, List<CalendarActivity>> activitiesForWeek = getCalendarActivitiesWeek(weekStart, activitiesToDisplay);
+            Map<Integer, List<CalendarActivity>> activitiesForWeek = getCalendarActivitiesWeek(weekStart, (currentFilteredActivities != null) ? currentFilteredActivities : allActivities);
             drawCalendarWeek(weekStart, activitiesForWeek);
         }
     }
@@ -323,18 +319,15 @@ public class calendrierController implements Initializable {
             if (activityCount < 2) {
                 String fullText = "   "+activity.getMatiere() + " " + activity.getSalle() + " " + activity.getStartDateTime();
                 Label activityLabel = new Label(fullText);
-                System.out.println("Activity: " + activity.getMatiere() + " isExam: " + activity.isExam());
                 if (activity.isExam()) {
                     activityLabel.getStyleClass().add("exam-label");
                 } else {
                     activityLabel.getStyleClass().remove("exam-label");
                 }
-                activityLabel.getStyleClass().clear(); // Attention, cela supprime tous les styles
+                activityLabel.getStyleClass().clear();
                 if (activity.isExam()) {
                     activityLabel.setTextFill(Color.RED);
                 }
-
-
 
                 activityLabel.setWrapText(true);
                 activityLabel.setMaxWidth(rectangleHeight - 5);
@@ -375,15 +368,21 @@ public class calendrierController implements Initializable {
     }
 
     public Map<Integer, List<CalendarActivity>> getCalendarActivitiesWeek(ZonedDateTime weekStart, List<CalendarActivity> allEvents) {
+        ZonedDateTime weekEnd = weekStart.plusDays(7);
         Map<Integer, List<CalendarActivity>> weekActivities = new HashMap<>();
-        ZonedDateTime weekEnd = weekStart.plusDays(6);
+
+
         for (CalendarActivity event : allEvents) {
             ZonedDateTime eventStart = event.getStartDateTime();
-            if (eventStart != null && !eventStart.isBefore(weekStart) && eventStart.isBefore(weekEnd)) {
+            ZonedDateTime eventEnd = event.getEndDateTime();
+
+            if (eventStart != null && !eventStart.isBefore(weekStart) && eventStart.isBefore(weekEnd)&& !eventEnd.isAfter(weekEnd)) {
                 int dayOfWeek = eventStart.getDayOfWeek().getValue();
+                System.out.println("heeeeeeeeeeee"+dayOfWeek);
                 weekActivities.computeIfAbsent(dayOfWeek, k -> new ArrayList<>()).add(event);
             }
         }
+
         return weekActivities;
     }
     void drawCalendarWeek(ZonedDateTime weekStart, Map<Integer, List<CalendarActivity>> activitiesForWeek) {
@@ -396,16 +395,18 @@ public class calendrierController implements Initializable {
         double spacingH = calendar.getHgap(); // L'espacement horizontal entre les cellules
         double spacingV = calendar.getVgap(); // L'espacement vertical entre les rangées de cellules, si applicable
 
-// Calculer la largeur et la hauteur des cellules pour l'affichage hebdomadaire
-        double cellWidth = (calendarWidth / 7) - strokeWidth - spacingH; // Diviser par 7 jours de la semaine
+        double cellWidth = (calendarWidth / 7) - strokeWidth - spacingH;
         double cellHeight = calendarHeight - strokeWidth - spacingV;
         for (int dayOfWeek = 1; dayOfWeek <= 7; dayOfWeek++) {
-            ZonedDateTime currentDay = weekStart.with(DayOfWeek.of(dayOfWeek));
+
+            ZonedDateTime currentDay = weekStart.plusDays(dayOfWeek - 1);
             List<CalendarActivity> dayActivities = activitiesForWeek.getOrDefault(dayOfWeek, new ArrayList<>());
-            StackPane dateCell = createDateCell(currentDay, dayActivities, cellWidth,cellHeight);
+            StackPane dateCell = createDateCell(currentDay, dayActivities, cellWidth, cellHeight);
             calendar.getChildren().add(dateCell);
         }
     }
+
+
     public String formatTeacherEmail(String fullName) {
         String emailName = fullName.toLowerCase();
         emailName = emailName.replace(" ", ".");
