@@ -91,10 +91,6 @@ public class calendrierController implements Initializable {
     public void setProfVisibility(boolean isVisible) {
         ajouterEvenementBtn.setVisible(isVisible);
     }
-/*
-    Connexion connexion =new Connexion();
-    choix_Formations formations=new choix_Formations();
-    String formation=formations.getFormation();*/
 
     private void applyDarkMode(boolean isDarkMode) {
         if (calendrierPane != null) {
@@ -149,10 +145,10 @@ public class calendrierController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dateFocus = ZonedDateTime.now();
         today = ZonedDateTime.now();
-        List<String> matieres = Arrays.asList("Anglais");
+        List<String> matieres = Arrays.asList("","ANGLAIS", "ANAGEMENT PAR LES PROC", "GESTION DE PROJET","APPLICATION DE MSI");
         List<String> groupes = Arrays.asList("Groupe A", "Groupe B", "Groupe C");
-        List<String> salles = Arrays.asList("Salle 101", "Salle 102", "Salle 201");
-        List<String> typesCours = Arrays.asList("ANGLAIS", "ANAGEMENT PAR LES PROC", "GESTION DE PROJET","APPLICATION DE MSI");
+        List<String> salles = Arrays.asList("","Amphi Ada", "Amphi Blaise");
+        List<String> typesCours = Arrays.asList("","TP","TD","CM");
 
         comboMatiere.getItems().setAll(matieres);
         comboGroupe.getItems().setAll(groupes);
@@ -186,7 +182,6 @@ public class calendrierController implements Initializable {
         String groupeSelected = comboGroupe.getValue();
         String salleSelected = comboSalle.getValue();
         String typeCoursSelected = comboTypeCours.getValue();
-
         currentFilteredActivities = filterActivities(
                 allActivities,
                 matiereSelected,
@@ -194,7 +189,6 @@ public class calendrierController implements Initializable {
                 salleSelected,
                 typeCoursSelected
         );
-
         refreshCalendar();
     }
     public List<CalendarActivity> filterActivities(List<CalendarActivity> allActivities, String matiere, String groupe, String salle, String typeCours) {
@@ -202,15 +196,14 @@ public class calendrierController implements Initializable {
         return allActivities.stream()
                 .filter(activity -> matiere == null || matiere.isEmpty() || activity.getMatiere().contains(matiere))
                 .filter(activity -> groupe == null || groupe.isEmpty() || activity.getMatiere().contains(groupe))
-                .filter(activity -> salle == null || salle.isEmpty() || activity.getMatiere().contains(salle))
-                .filter(activity -> typeCours == null || typeCours.isEmpty() || activity.getMatiere().contains(typeCours))
+                .filter(activity -> salle == null || salle.isEmpty() || activity.getLocation().contains(salle))
+                .filter(activity -> typeCours == null || typeCours.isEmpty() || activity.getSummary().contains(typeCours))
                 .collect(Collectors.toList());
     }
 
     private boolean isMonthView = true;
     @FXML
     void ajouterEvenementAction(ActionEvent event) throws IOException {
-
         showAddEventDialog();
     }
     @FXML
@@ -220,9 +213,7 @@ public class calendrierController implements Initializable {
             refreshCalendar();
         } else {
             dateFocus = dateFocus.minusWeeks(1);
-            ZonedDateTime weekStart = dateFocus.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-            Map<Integer, List<CalendarActivity>> activitiesForWeek = getCalendarActivitiesWeek(weekStart, allActivities);
-            drawCalendarWeek(weekStart, activitiesForWeek);
+            refreshCalendar();
         }
 
     }
@@ -234,34 +225,17 @@ public class calendrierController implements Initializable {
             refreshCalendar();
         } else {
             dateFocus = dateFocus.plusWeeks(1);
-            ZonedDateTime weekStart = dateFocus.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-            Map<Integer, List<CalendarActivity>> activitiesForWeek = getCalendarActivitiesWeek(weekStart, allActivities);
-            drawCalendarWeek(weekStart, activitiesForWeek);
+            refreshCalendar();
         }
 
     }
 
-    @FXML
-    void backOneWeek(ActionEvent event) {
-        dateFocus = dateFocus.minusWeeks(1);
-        ZonedDateTime weekStart = dateFocus.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        Map<Integer, List<CalendarActivity>> activitiesForWeek = getCalendarActivitiesWeek(weekStart, allActivities);
-        drawCalendarWeek(weekStart, activitiesForWeek);
-    }
-    @FXML
-    void forwardOneWeek(ActionEvent event) {
-        dateFocus = dateFocus.plusWeeks(1);
-        ZonedDateTime weekStart = dateFocus.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        Map<Integer, List<CalendarActivity>> activitiesForWeek = getCalendarActivitiesWeek(weekStart, allActivities);
-        drawCalendarWeek(weekStart, activitiesForWeek);
-    }
+
     @FXML
     void showWeekView(ActionEvent event) {
         isMonthView = false;
         calendar.getChildren().clear();
-        ZonedDateTime weekStart = dateFocus.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        Map<Integer, List<CalendarActivity>> activitiesForWeek = getCalendarActivitiesWeek(weekStart, allActivities);
-        drawCalendarWeek(weekStart, activitiesForWeek);
+        refreshCalendar();
     }
 
     @FXML
@@ -274,8 +248,14 @@ public class calendrierController implements Initializable {
     void refreshCalendar() {
         List<CalendarActivity> activitiesToDisplay = (currentFilteredActivities != null) ? currentFilteredActivities : allActivities;
 
-        Map<Integer, List<CalendarActivity>> activitiesForMonth = getCalendarActivitiesMonth(dateFocus, activitiesToDisplay);
-        drawCalendar(dateFocus, activitiesForMonth);
+        if (isMonthView) {
+            Map<Integer, List<CalendarActivity>> activitiesForMonth = getCalendarActivitiesMonth(dateFocus, activitiesToDisplay);
+            drawCalendar(dateFocus, activitiesForMonth);
+        } else {
+            ZonedDateTime weekStart = dateFocus.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+            Map<Integer, List<CalendarActivity>> activitiesForWeek = getCalendarActivitiesWeek(weekStart, activitiesToDisplay);
+            drawCalendarWeek(weekStart, activitiesForWeek);
+        }
     }
 
     private void drawCalendar(ZonedDateTime dateFocus, Map<Integer, List<CalendarActivity>> activitiesForMonth) {
@@ -335,19 +315,29 @@ public class calendrierController implements Initializable {
             if (activityCount < 2) {
                 String fullText = "   "+activity.getMatiere() + " " + activity.getSalle() + " " + activity.getStartDateTime();
                 Label activityLabel = new Label(fullText);
+                System.out.println("Activity: " + activity.getMatiere() + " isExam: " + activity.isExam());
+                if (activity.isExam()) {
+                    activityLabel.getStyleClass().add("exam-label");
+                } else {
+                    activityLabel.getStyleClass().remove("exam-label");
+                }
+                activityLabel.getStyleClass().clear(); // Attention, cela supprime tous les styles
                 if (activity.isExam()) {
                     activityLabel.setTextFill(Color.RED);
                 }
 
+
+
                 activityLabel.setWrapText(true);
                 activityLabel.setMaxWidth(rectangleHeight - 5);
                 activityLabel.setEllipsisString("...");
+                activityBox.getChildren().add(activityLabel);
+
                 activityLabel.setOnMouseClicked(mouseEvent -> {
                     openActivityDetailsWindow(date, activities);
                 });
 
                 VBox.setMargin(activityLabel, new Insets(0, 5, 0, 5));
-                activityBox.getChildren().add(activityLabel);
                 activityCount++;
             } else {
                 if (activityCount == 2) {
@@ -409,12 +399,8 @@ public class calendrierController implements Initializable {
         }
     }
     public String formatTeacherEmail(String fullName) {
-
         String emailName = fullName.toLowerCase();
-
         emailName = emailName.replace(" ", ".");
-
-
         return emailName;
     }
     private void openActivityDetailsWindow(ZonedDateTime date, List<CalendarActivity> activities) {
@@ -523,7 +509,6 @@ public class calendrierController implements Initializable {
         CheckBox examCheckBox = new CheckBox();
         grid.add(examCheckBox, 1, 8);
 
-        // Boutons Ajouter et Annuler
         Button addButton = new Button("Ajouter");
         Button cancelButton = new Button("Annuler");
 

@@ -7,9 +7,12 @@
     -fx-font-size: 30px;
     -fx-text-fill: #333;
 }
+.exam-label {
+    -fx-text-fill: red;
+}
 .dark-mode {
     /* Styles pour le mode sombre */
-    -fx-background-color: black;}
+    -fx-background-color: #31302F;}
 .style {
     /* Styles par défaut */
     -fx-background-color: white;
@@ -18,6 +21,8 @@
 .label {
     -fx-font-size: 14px;
     -fx-text-fill: #666;
+    -fx-text-fill: black;
+
 }
 
 .text-field, .password-field {
@@ -34,7 +39,17 @@
     -fx-background-radius: 5;
     -fx-font-weight: bold;
 }
+.combo-box-base {
+    -fx-background-color: #5cb85c;
+}
 
+.combo-box .list-cell {
+    -fx-background-color: #5cb85c;
+}
+
+.radio-button .text {
+    -fx-fill: black; /* Change la couleur du texte */
+}
 .button:hover {
     -fx-background-color: #5cb85c;
 }
