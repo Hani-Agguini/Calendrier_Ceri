@@ -48,5 +48,8 @@
     </stylesheets>
     <Button fx:id="ajouterEvenementBtn" text="Ajouter Événement" onAction="#ajouterEvenementAction" visible="false"/>
 
-
+    <ComboBox fx:id="comboMatiere" prefWidth="150" />
+    <ComboBox fx:id="comboGroupe" prefWidth="150" />
+    <ComboBox fx:id="comboSalle" prefWidth="150" />
+    <ComboBox fx:id="comboTypeCours" prefWidth="150" />
 </AnchorPane>

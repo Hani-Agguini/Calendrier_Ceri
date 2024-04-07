@@ -39,6 +39,7 @@ import java.util.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -51,7 +52,14 @@ public class calendrierController implements Initializable {
 
     ZonedDateTime dateFocus;
     ZonedDateTime today;
-
+    @FXML
+    private ComboBox<String> comboMatiere;
+    @FXML
+    private ComboBox<String> comboGroupe;
+    @FXML
+    private ComboBox<String> comboSalle;
+    @FXML
+    private ComboBox<String> comboTypeCours;
     @FXML
     private Label year;
 
@@ -112,6 +120,7 @@ public class calendrierController implements Initializable {
     }
     private String formationFileName;
     private List<CalendarActivity> allActivities = new ArrayList<>();
+    private List<CalendarActivity> currentFilteredActivities;
 
     public void setFormation(String formation) {
         this.formationFileName = formation+ ".ics";
@@ -134,12 +143,51 @@ public class calendrierController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dateFocus = ZonedDateTime.now();
         today = ZonedDateTime.now();
+        List<String> matieres = Arrays.asList("Anglais");
+        List<String> groupes = Arrays.asList("Groupe A", "Groupe B", "Groupe C");
+        List<String> salles = Arrays.asList("Salle 101", "Salle 102", "Salle 201");
+        List<String> typesCours = Arrays.asList("ANGLAIS", "ANAGEMENT PAR LES PROC", "GESTION DE PROJET","APPLICATION DE MSI");
+
+        comboMatiere.getItems().setAll(matieres);
+        comboGroupe.getItems().setAll(groupes);
+        comboSalle.getItems().setAll(salles);
+        comboTypeCours.getItems().setAll(typesCours);
+        comboMatiere.valueProperty().addListener((obs, oldVal, newVal) -> updateCalendarView());
+        comboGroupe.valueProperty().addListener((obs, oldVal, newVal) -> updateCalendarView());
+        comboSalle.valueProperty().addListener((obs, oldVal, newVal) -> updateCalendarView());
+        comboTypeCours.valueProperty().addListener((obs, oldVal, newVal) -> updateCalendarView());
         refreshCalendar();
         applyDarkMode(ThemeManager.darkModeActiveProperty().get());
         ThemeManager.darkModeActiveProperty().addListener((obs, oldVal, isDarkMode) -> {
             applyDarkMode(isDarkMode);
         });
     }
+    private void updateCalendarView() {
+        String matiereSelected = comboMatiere.getValue();
+        String groupeSelected = comboGroupe.getValue();
+        String salleSelected = comboSalle.getValue();
+        String typeCoursSelected = comboTypeCours.getValue();
+
+        currentFilteredActivities = filterActivities(
+                allActivities,
+                matiereSelected,
+                groupeSelected,
+                salleSelected,
+                typeCoursSelected
+        );
+
+        refreshCalendar();
+    }
+    public List<CalendarActivity> filterActivities(List<CalendarActivity> allActivities, String matiere, String groupe, String salle, String typeCours) {
+
+        return allActivities.stream()
+                .filter(activity -> matiere == null || matiere.isEmpty() || activity.getMatiere().contains(matiere))
+                .filter(activity -> groupe == null || groupe.isEmpty() || activity.getMatiere().contains(groupe))
+                .filter(activity -> salle == null || salle.isEmpty() || activity.getMatiere().contains(salle))
+                .filter(activity -> typeCours == null || typeCours.isEmpty() || activity.getMatiere().contains(typeCours))
+                .collect(Collectors.toList());
+    }
+
     private boolean isMonthView = true;
     @FXML
     void ajouterEvenementAction(ActionEvent event) throws IOException {
@@ -205,7 +253,9 @@ public class calendrierController implements Initializable {
     }
 
     void refreshCalendar() {
-        Map<Integer, List<CalendarActivity>> activitiesForMonth = getCalendarActivitiesMonth(dateFocus, allActivities);
+        List<CalendarActivity> activitiesToDisplay = (currentFilteredActivities != null) ? currentFilteredActivities : allActivities;
+
+        Map<Integer, List<CalendarActivity>> activitiesForMonth = getCalendarActivitiesMonth(dateFocus, activitiesToDisplay);
         drawCalendar(dateFocus, activitiesForMonth);
     }
 
