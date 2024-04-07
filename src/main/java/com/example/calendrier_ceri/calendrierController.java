@@ -30,6 +30,7 @@ import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URL;
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -385,28 +386,64 @@ public class calendrierController implements Initializable {
 
         return weekActivities;
     }
+
     void drawCalendarWeek(ZonedDateTime weekStart, Map<Integer, List<CalendarActivity>> activitiesForWeek) {
         calendar.getChildren().clear();
         year.setText(String.valueOf(weekStart.getYear()));
-        month.setText(weekStart.format(DateTimeFormatter.ofPattern(" 'Semaine' w")));
+        month.setText(weekStart.format(DateTimeFormatter.ofPattern("'Semaine' w")));
+
         double calendarWidth = calendar.getPrefWidth();
-        double calendarHeight = calendar.getPrefHeight();
-        double strokeWidth = 1;
         double spacingH = calendar.getHgap(); // L'espacement horizontal entre les cellules
-        double spacingV = calendar.getVgap(); // L'espacement vertical entre les rangées de cellules, si applicable
 
-        double cellWidth = (calendarWidth / 7) - strokeWidth - spacingH;
-        double cellHeight = calendarHeight - strokeWidth - spacingV;
+        double cellWidth = (calendarWidth / 7) - spacingH;
+
         for (int dayOfWeek = 1; dayOfWeek <= 7; dayOfWeek++) {
-
             ZonedDateTime currentDay = weekStart.plusDays(dayOfWeek - 1);
             List<CalendarActivity> dayActivities = activitiesForWeek.getOrDefault(dayOfWeek, new ArrayList<>());
-            StackPane dateCell = createDateCell(currentDay, dayActivities, cellWidth, cellHeight);
-            calendar.getChildren().add(dateCell);
+
+            VBox dayColumn = new VBox(5); // Espace vertical entre les activités
+            dayColumn.setPrefWidth(cellWidth);
+
+            // Ajoutez le numéro du jour au début de la colonne du jour
+            Label dayNumberLabel = new Label(String.valueOf(currentDay.getDayOfMonth()));
+            dayNumberLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16;");
+            dayColumn.getChildren().add(dayNumberLabel);
+
+            for (CalendarActivity activity : dayActivities) {
+                StackPane activityCell = createActivityCell(activity, cellWidth, currentDay);
+                dayColumn.getChildren().add(activityCell);
+            }
+
+            calendar.getChildren().add(dayColumn);
         }
     }
+    private static final int HEIGHT_PER_HOUR = 60;
 
+    private StackPane createActivityCell(CalendarActivity activity, double cellWidth, ZonedDateTime currentDay) {
+        Duration duration = Duration.between(activity.getStartDateTime(), activity.getEndDateTime());
+        double hours = duration.toHours();
+        double cellHeight = hours * HEIGHT_PER_HOUR;
 
+        StackPane activityCell = new StackPane();
+        activityCell.setPrefSize(cellWidth, cellHeight);
+        if(currentDay.toLocalDate().isEqual(today.toLocalDate())){
+            activityCell.setStyle("-fx-background-color: lightblue;-fx-font-size: 10;-fx-border-color: red;");
+        }else{
+        activityCell.setStyle("-fx-background-color: lightblue;-fx-font-size: 10;");}
+
+        Label titleLabel = new Label(activity.getMatiere());
+        titleLabel.setStyle(" -fx-font-size: 11;");
+
+        titleLabel.setWrapText(true); // Permettre au texte de revenir à la ligne si nécessaire
+        activityCell.getChildren().add(titleLabel);
+
+        // Ajout de l'interaction pour ouvrir les détails de l'activité
+        activityCell.setOnMouseClicked(mouseEvent -> {
+            openActivityDetailsWindow(currentDay, Collections.singletonList(activity));
+        });
+
+        return activityCell;
+    }
     public String formatTeacherEmail(String fullName) {
         String emailName = fullName.toLowerCase();
         emailName = emailName.replace(" ", ".");
