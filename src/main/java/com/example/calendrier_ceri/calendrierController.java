@@ -43,6 +43,12 @@ import java.util.stream.Collectors;
 
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 
 
 import static com.example.calendrier_ceri.Parseur.parceFichier;
@@ -160,6 +166,19 @@ public class calendrierController implements Initializable {
         applyDarkMode(ThemeManager.darkModeActiveProperty().get());
         ThemeManager.darkModeActiveProperty().addListener((obs, oldVal, isDarkMode) -> {
             applyDarkMode(isDarkMode);
+        });
+        calendrierPane.sceneProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                // Raccourci pour "back"
+                newValue.getAccelerators().put(
+                        new KeyCodeCombination(KeyCode.LEFT, KeyCombination.CONTROL_DOWN),
+                        () -> back(null));
+
+                // Raccourci pour "forward"
+                newValue.getAccelerators().put(
+                        new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.CONTROL_DOWN),
+                        () -> forward(null));
+            }
         });
     }
     private void updateCalendarView() {
