@@ -87,10 +87,13 @@ public class calendrierController implements Initializable {
     @FXML
     private Button ajouterEvenementBtn; // Assurez-vous que c'est bien lié à votre FXML
     @FXML
-    private Button retur;
+    private Button reserversalle;
     public void setProfVisibility(boolean isVisible) {
         ajouterEvenementBtn.setVisible(isVisible);
+        reserversalle.setVisible(isVisible);
     }
+
+
 
     private void applyDarkMode(boolean isDarkMode) {
         if (calendrierPane != null) {
@@ -204,6 +207,11 @@ public class calendrierController implements Initializable {
     private boolean isMonthView = true;
     @FXML
     void ajouterEvenementAction(ActionEvent event) throws IOException {
+        showAddEventDialog();
+    }
+
+    @FXML
+    void reserversalle(ActionEvent event) throws IOException{
         showAddEventDialog();
     }
     @FXML
@@ -528,20 +536,23 @@ public class calendrierController implements Initializable {
             String room = roomField.getText();
             String description = descriptionField.getText();
             String location = locationField.getText();
-            String dateDebut =dateStart.getText();
-            String dateFin= fin.getText();
+            String dateDebut = dateStart.getText();
+            String dateFin = fin.getText();
             boolean isExam = examCheckBox.isSelected();
-
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault());
-
 
             try {
                 ZonedDateTime startDateTime = ZonedDateTime.parse(dateDebut, formatter);
                 ZonedDateTime endDateTime = ZonedDateTime.parse(dateFin, formatter);
 
-
-                addEventToIcsFile("fichier_ics\\"+formationFileName, startDateTime, endDateTime, summary, location, description, teacher, room,isExam);
-                dialogStage.close();
+                // Vérifiez si la salle est libre
+                if (isSalleLibre(room, startDateTime, endDateTime)) {
+                    addEventToIcsFile("fichier_ics\\"+formationFileName, startDateTime, endDateTime, summary, location, description, teacher, room, isExam);
+                    dialogStage.close();
+                } else {
+                    // Afficher une notification indiquant que la salle est déjà réservée
+                    showAlertSalleReservee();
+                }
             } catch (DateTimeParseException ex) {
                 System.err.println("Format de date ou d'heure incorrect: " + ex.getMessage());
             }
@@ -585,6 +596,24 @@ public class calendrierController implements Initializable {
             System.err.println("An error occurred while writing to the .ics file: " + e.getMessage());
         }
     }
+
+    private boolean isSalleLibre(String salle, ZonedDateTime debut, ZonedDateTime fin) {
+        for (CalendarActivity activite : allActivities) {
+            if (activite.getSalle().equals(salle) &&
+                    activite.getStartDateTime().isBefore(fin) && activite.getEndDateTime().isAfter(debut)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    private void showAlertSalleReservee() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Salle Réservée");
+        alert.setHeaderText(null);
+        alert.setContentText("La salle est déjà réservée à l'horaire sélectionné.");
+        alert.showAndWait();
+    }
+
 
 
 }

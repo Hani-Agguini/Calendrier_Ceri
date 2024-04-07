@@ -14,12 +14,12 @@
     <HBox alignment="CENTER" layoutX="36.0" layoutY="10" prefHeight="30.0" prefWidth="694.0" spacing="10">
         <children>
             <ComboBox fx:id="comboMatiere" prefWidth="150" promptText="Matiere" />
-            <ComboBox fx:id="comboGroupe" prefWidth="150" promptText="Groupe"/>
-            <ComboBox fx:id="comboSalle" prefWidth="150" promptText="Salle"/>
-            <ComboBox fx:id="comboTypeCours" prefWidth="150" promptText="TypeCours"/>
+            <ComboBox fx:id="comboGroupe" prefWidth="150" promptText="Groupe" />
+            <ComboBox fx:id="comboSalle" prefWidth="150" promptText="Salle" />
+            <ComboBox fx:id="comboTypeCours" prefWidth="150" promptText="TypeCours" />
         </children>
     </HBox>
-    <FlowPane fx:id="calendar" hgap="10.0" layoutX="50.0" layoutY="200.0" prefHeight="498.0" prefWidth="716.0" vgap="5.0" />
+    <FlowPane fx:id="calendar" hgap="10.0" layoutX="33.0" layoutY="170.0" prefHeight="498.0" prefWidth="716.0" vgap="5.0" />
 
     <HBox alignment="CENTER" layoutX="28.0" layoutY="70.0" prefHeight="18.0" prefWidth="725.0" spacing="5.0" styleClass="label">
         <children>
@@ -56,7 +56,7 @@
     </HBox>
     <Button mnemonicParsing="false" onAction="#choix_formation" styleClass="button" text="choix de formation du temps" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
     <Button fx:id="ajouterEvenementBtn" onAction="#ajouterEvenementAction" text="Ajouter Événement" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
-
+   <Button fx:id="reserversalle" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" text="Button" onAction="#reserversalle" visible="false"/>
     <stylesheets>
         <URL value="@style.css" />
     </stylesheets>
