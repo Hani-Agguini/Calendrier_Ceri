@@ -32,7 +32,7 @@
 }
 
 .button {
-    -fx-background-color: #5cb85c;
+    -fx-background-color: #5DADE2;
     -fx-text-fill: white;
     -fx-padding: 10px 20px;
     -fx-border-radius: 5;
@@ -40,16 +40,14 @@
     -fx-font-weight: bold;
 }
 .combo-box-base {
-    -fx-background-color: #5cb85c;
+    -fx-background-color: #5DADE2;
 }
 
-.combo-box .list-cell {
-    -fx-background-color: #5cb85c;
-}
+
 
 .radio-button .text {
     -fx-fill: black; /* Change la couleur du texte */
 }
 .button:hover {
-    -fx-background-color: #5cb85c;
+    -fx-background-color: lightblue;
 }

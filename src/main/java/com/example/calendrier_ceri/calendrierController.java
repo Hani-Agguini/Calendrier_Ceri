@@ -90,7 +90,6 @@ public class calendrierController implements Initializable {
     @FXML
     private Button reserversalle;
     public void setProfVisibility(boolean isVisible) {
-        ajouterEvenementBtn.setVisible(isVisible);
         reserversalle.setVisible(isVisible);
     }
 
@@ -150,13 +149,16 @@ public class calendrierController implements Initializable {
         dateFocus = ZonedDateTime.now();
         today = ZonedDateTime.now();
         List<String> matieres = Arrays.asList("","ANGLAIS", "ANAGEMENT PAR LES PROC", "GESTION DE PROJET","APPLICATION DE MSI");
+        List<String> groupes = Arrays.asList("","ALT", "Cla");
         List<String> salles = Arrays.asList("","Amphi Ada", "Amphi Blaise");
         List<String> typesCours = Arrays.asList("","TP","TD","CM");
 
         comboMatiere.getItems().setAll(matieres);
+        comboGroupe.getItems().setAll(groupes);
         comboSalle.getItems().setAll(salles);
         comboTypeCours.getItems().setAll(typesCours);
         comboMatiere.valueProperty().addListener((obs, oldVal, newVal) -> updateCalendarView());
+        comboGroupe.valueProperty().addListener((obs, oldVal, newVal) -> updateCalendarView());
         comboSalle.valueProperty().addListener((obs, oldVal, newVal) -> updateCalendarView());
         comboTypeCours.valueProperty().addListener((obs, oldVal, newVal) -> updateCalendarView());
         refreshCalendar();
@@ -196,7 +198,8 @@ public class calendrierController implements Initializable {
 
         return allActivities.stream()
                 .filter(activity -> matiere == null || matiere.isEmpty() || activity.getMatiere().contains(matiere))
-                .filter(activity -> salle == null || salle.isEmpty() || activity.getDescription().contains(salle))
+                .filter(activity -> groupe == null || groupe.isEmpty() || activity.getDescription().contains(groupe))
+                .filter(activity -> salle == null || salle.isEmpty() || activity.getLocation().contains(salle))
                 .filter(activity -> typeCours == null || typeCours.isEmpty() || activity.getSummary().contains(typeCours))
                 .collect(Collectors.toList());
     }
@@ -377,7 +380,7 @@ public class calendrierController implements Initializable {
             ZonedDateTime eventStart = event.getStartDateTime();
             ZonedDateTime eventEnd = event.getEndDateTime();
 
-            if (eventStart != null && !eventStart.isBefore(weekStart) && eventStart.isBefore(weekEnd)&& !eventEnd.isAfter(weekEnd)) {
+            if (eventStart != null && !eventStart.isBefore(weekStart) && eventStart.isBefore(weekEnd)) {
                 int dayOfWeek = eventStart.getDayOfWeek().getValue();
                 System.out.println("heeeeeeeeeeee"+dayOfWeek);
                 weekActivities.computeIfAbsent(dayOfWeek, k -> new ArrayList<>()).add(event);
@@ -406,17 +409,26 @@ public class calendrierController implements Initializable {
 
             // Ajoutez le numéro du jour au début de la colonne du jour
             Label dayNumberLabel = new Label(String.valueOf(currentDay.getDayOfMonth()));
-            dayNumberLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16;");
+            dayNumberLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 12;");
             dayColumn.getChildren().add(dayNumberLabel);
 
-            for (CalendarActivity activity : dayActivities) {
-                StackPane activityCell = createActivityCell(activity, cellWidth, currentDay);
-                dayColumn.getChildren().add(activityCell);
+            if (dayActivities.isEmpty()) {
+                // Si aucune activité, ajoutez un StackPane bleu vide
+                StackPane emptyCell = new StackPane();
+                emptyCell.setStyle("-fx-background-color: lightblue;");
+                emptyCell.setPrefSize(cellWidth, HEIGHT_PER_HOUR); // Définissez une hauteur par défaut pour le carré vide
+                dayColumn.getChildren().add(emptyCell);
+            } else {
+                for (CalendarActivity activity : dayActivities) {
+                    StackPane activityCell = createActivityCell(activity, cellWidth, currentDay);
+                    dayColumn.getChildren().add(activityCell);
+                }
             }
 
             calendar.getChildren().add(dayColumn);
         }
     }
+
     private static final int HEIGHT_PER_HOUR = 60;
 
     private StackPane createActivityCell(CalendarActivity activity, double cellWidth, ZonedDateTime currentDay) {
@@ -429,21 +441,21 @@ public class calendrierController implements Initializable {
         if(currentDay.toLocalDate().isEqual(today.toLocalDate())){
             activityCell.setStyle("-fx-background-color: lightblue;-fx-font-size: 10;-fx-border-color: red;");
         }else{
-        activityCell.setStyle("-fx-background-color: lightblue;-fx-font-size: 10;");}
+            activityCell.setStyle("-fx-background-color: lightblue;-fx-font-size: 10;");}
 
         Label titleLabel = new Label(activity.getMatiere());
         titleLabel.setStyle(" -fx-font-size: 11;");
 
-        titleLabel.setWrapText(true); // Permettre au texte de revenir à la ligne si nécessaire
+        titleLabel.setWrapText(true);
         activityCell.getChildren().add(titleLabel);
 
-        // Ajout de l'interaction pour ouvrir les détails de l'activité
         activityCell.setOnMouseClicked(mouseEvent -> {
             openActivityDetailsWindow(currentDay, Collections.singletonList(activity));
         });
 
         return activityCell;
     }
+
     public String formatTeacherEmail(String fullName) {
         String emailName = fullName.toLowerCase();
         emailName = emailName.replace(" ", ".");
@@ -460,7 +472,7 @@ public class calendrierController implements Initializable {
             for (CalendarActivity activity : activities) {
                 VBox activityDetails = new VBox(5);
                 activityDetails.setPadding(new Insets(10));
-                activityDetails.setStyle("-fx-border-color: lightgray; -fx-border-width: 1; -fx-background-color: #f9f9f9;");
+                activityDetails.setStyle("-fx-border-color: lightblue; -fx-border-width: 1; -fx-background-color: lightblue;");
                 Label matiere = new Label("Matière: " + activity.getMatiere());
                 Label enseignant = new Label("Enseignant: " + activity.getEnseignant());
                 enseignant.setOnMouseClicked(e -> {
@@ -555,6 +567,7 @@ public class calendrierController implements Initializable {
         CheckBox examCheckBox = new CheckBox();
         grid.add(examCheckBox, 1, 8);
 
+        // Boutons Ajouter et Annuler
         Button addButton = new Button("Ajouter");
         Button cancelButton = new Button("Annuler");
 
@@ -574,23 +587,20 @@ public class calendrierController implements Initializable {
             String room = roomField.getText();
             String description = descriptionField.getText();
             String location = locationField.getText();
-            String dateDebut = dateStart.getText();
-            String dateFin = fin.getText();
+            String dateDebut =dateStart.getText();
+            String dateFin= fin.getText();
             boolean isExam = examCheckBox.isSelected();
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault());
+
 
             try {
                 ZonedDateTime startDateTime = ZonedDateTime.parse(dateDebut, formatter);
                 ZonedDateTime endDateTime = ZonedDateTime.parse(dateFin, formatter);
 
-                // Vérifiez si la salle est libre
-                if (isSalleLibre(room, startDateTime, endDateTime)) {
-                    addEventToIcsFile("fichier_ics\\"+formationFileName, startDateTime, endDateTime, summary, location, description, teacher, room, isExam);
-                    dialogStage.close();
-                } else {
-                    // Afficher une notification indiquant que la salle est déjà réservée
-                    showAlertSalleReservee();
-                }
+
+                addEventToIcsFile("fichier_ics\\"+formationFileName, startDateTime, endDateTime, summary, location, description, teacher, room,isExam);
+                dialogStage.close();
             } catch (DateTimeParseException ex) {
                 System.err.println("Format de date ou d'heure incorrect: " + ex.getMessage());
             }
@@ -634,7 +644,6 @@ public class calendrierController implements Initializable {
             System.err.println("An error occurred while writing to the .ics file: " + e.getMessage());
         }
     }
-
     private boolean isSalleLibre(String salle, ZonedDateTime debut, ZonedDateTime fin) {
         for (CalendarActivity activite : allActivities) {
             if (activite.getSalle().equals(salle) &&
@@ -644,13 +653,7 @@ public class calendrierController implements Initializable {
         }
         return true;
     }
-    private void showAlertSalleReservee() {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Salle Réservée");
-        alert.setHeaderText(null);
-        alert.setContentText("La salle est déjà réservée à l'horaire sélectionné.");
-        alert.showAndWait();
-    }
+
 
 
 

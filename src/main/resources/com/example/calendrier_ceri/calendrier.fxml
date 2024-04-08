@@ -11,18 +11,20 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="calendrierPane" prefHeight="642.0" prefWidth="744.0" styleClass="style" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.calendrier_ceri.calendrierController">
-    <HBox alignment="CENTER" layoutX="36.0" layoutY="10" prefHeight="30.0" prefWidth="694.0" spacing="10">
+    <HBox alignment="CENTER" layoutX="100.0" layoutY="14.0" prefHeight="30.0" prefWidth="598.0" spacing="10">
         <children>
-            <ComboBox fx:id="comboMatiere" prefWidth="150" promptText="Matiere" />
-            <ComboBox fx:id="comboSalle" prefWidth="150" promptText="Salle" />
-            <ComboBox fx:id="comboTypeCours" prefWidth="150" promptText="TypeCours" />
+            <ComboBox fx:id="comboMatiere" prefHeight="18.0" prefWidth="123.0" promptText="Matiere" />
+            <ComboBox fx:id="comboGroupe" prefHeight="20.0" prefWidth="126.0" promptText="Groupe" />
+            <ComboBox fx:id="comboSalle" prefHeight="17.0" prefWidth="114.0" promptText="Salle" />
+            <ComboBox fx:id="comboTypeCours" prefHeight="14.0" prefWidth="119.0" promptText="TypeCours" />
         </children>
     </HBox>
     <FlowPane fx:id="calendar" hgap="10.0" layoutX="33.0" layoutY="170.0" prefHeight="422.0" prefWidth="702.0" vgap="5.0" />
 
-    <HBox alignment="CENTER" layoutX="28.0" layoutY="70.0" prefHeight="18.0" prefWidth="725.0" spacing="5.0" styleClass="label">
+    <HBox alignment="CENTER" layoutY="70.0" prefHeight="38.0" prefWidth="774.0" spacing="5.0" styleClass="label">
         <children>
-            <Button mnemonicParsing="false" onAction="#showWeekView" prefHeight="39.0" prefWidth="103.0" text="Semaine" />
+            <Button fx:id="reserversalle" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" text="Button" onAction="#reserversalle" visible="false"/>
+            <Button mnemonicParsing="false" onAction="#showWeekView" prefHeight="29.0" prefWidth="103.0" text="Semaine" />
             <Button mnemonicParsing="false" onAction="#back" text="&lt;" />
             <Label fx:id="year" text="####">
                 <font>
@@ -37,6 +39,7 @@
             </Label>
             <Button mnemonicParsing="false" onAction="#forward" text="&gt;" />
             <Button fx:id="showMonthView" mnemonicParsing="false" onAction="#showMonthView" text="Mois" />
+          <Button fx:id="ajouterEvenementBtn" onAction="#ajouterEvenementAction" text="Ajouter Événement" />
         </children>
     </HBox>
     <HBox alignment="CENTER" layoutX="10.0" layoutY="140.0" prefHeight="30.0" prefWidth="754.0" spacing="85" styleClass="label">
@@ -54,8 +57,6 @@
         </padding>
     </HBox>
     <Button layoutX="545.0" layoutY="592.0" mnemonicParsing="false" onAction="#choix_formation" prefHeight="36.0" prefWidth="150.0" styleClass="button" text="Formations" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="15.0" />
-    <Button fx:id="ajouterEvenementBtn" layoutX="14.0" layoutY="592.0" onAction="#ajouterEvenementAction" text="Ajouter Événement" visible="false" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
-   <Button fx:id="reserversalle" layoutX="307.0" layoutY="592.0" mnemonicParsing="false" onAction="#reserversalle" prefHeight="36.0" prefWidth="150.0" text="Reserver salle" visible="false" />
     <stylesheets>
         <URL value="@style.css" />
     </stylesheets>

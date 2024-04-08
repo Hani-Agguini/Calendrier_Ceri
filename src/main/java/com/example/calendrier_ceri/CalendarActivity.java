@@ -7,14 +7,10 @@ public class CalendarActivity {
     private ZonedDateTime endDateTime;
     private String description;
     private String location;
-
     private String summary;
-
     private String enseignant;
     private String matiere;
-
     private String salle;
-
     private boolean isExam;
 
 

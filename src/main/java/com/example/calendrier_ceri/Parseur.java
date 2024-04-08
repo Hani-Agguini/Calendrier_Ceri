@@ -82,6 +82,9 @@ public class Parseur {
                     ZonedDateTime zonedStartDateTime = toZonedDateTime(dtStart);
                     ZonedDateTime zonedEndDateTime = toZonedDateTime(dtEnd);
                     // Affiche les informations de l'événement
+                    if (matiere==null){
+                        matiere= new StringBuilder("Reservation de salle");
+                    }
                     evenements.add(new CalendarActivity(zonedStartDateTime,summary.toString(),enseignant.toString(),matiere.toString(), zonedEndDateTime,description.toString(),loc.toString(),salle.toString(),isExam));
                 }
             }
@@ -164,7 +167,7 @@ public class Parseur {
     }
 
     public static void main(String[] args) {
-        String filePath = "amphi_ada.ics";
+        String filePath = "m1_general.ics";
         List<CalendarActivity> activities = parceFichier(filePath);
 
         for (CalendarActivity evenement : activities) {
