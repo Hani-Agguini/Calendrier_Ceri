@@ -22,9 +22,9 @@
             <RadioButton text="s8" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="0" GridPane.rowIndex="1" />
             <RadioButton text="amphi_ada" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="0" GridPane.rowIndex="2" />
             <RadioButton text="m1_alt" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <RadioButton text="m1_general" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <RadioButton text="prof" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <RadioButton text="hani" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <RadioButton text="m1_classique" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <RadioButton fx:id="prof" text="prof" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="2" GridPane.rowIndex="1" visible="false" />
+            <RadioButton fx:id="hani" text="hani" toggleGroup="$uniqueToggleGroup" GridPane.columnIndex="2" GridPane.rowIndex="1" visible="false" />
             <!-- Add more RadioButtons for each category as needed -->
 
             <!-- Confirm Button -->

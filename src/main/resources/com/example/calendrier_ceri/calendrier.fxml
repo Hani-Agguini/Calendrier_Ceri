@@ -15,8 +15,8 @@
         <children>
             <ComboBox fx:id="comboMatiere" prefHeight="18.0" prefWidth="123.0" promptText="Matiere" />
             <ComboBox fx:id="comboGroupe" prefHeight="20.0" prefWidth="126.0" promptText="Groupe" />
-            <ComboBox fx:id="comboSalle" prefHeight="17.0" prefWidth="114.0" promptText="Salle" />
-            <ComboBox fx:id="comboTypeCours" prefHeight="14.0" prefWidth="119.0" promptText="TypeCours" />
+            <ComboBox fx:id="comboTypeCours" prefHeight="17.0" prefWidth="114.0" promptText="TypeCours" />
+            <ComboBox fx:id="comboSalle" prefHeight="17.0" prefWidth="114.0" promptText="Salle" visible="false" />
         </children>
     </HBox>
     <FlowPane fx:id="calendar" hgap="10.0" layoutX="33.0" layoutY="170.0" prefHeight="422.0" prefWidth="702.0" vgap="5.0" />

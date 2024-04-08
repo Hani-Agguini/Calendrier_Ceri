@@ -19,12 +19,21 @@ import java.util.ResourceBundle;
 
 public class choix_Formations implements Initializable {
 
+    public RadioButton prof;
+    public RadioButton hani;
     @FXML
     private ToggleGroup uniqueToggleGroup;
     @FXML
     private AnchorPane choixPane;
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if(Connexion.prof){
+            prof.setVisible(true);
+        }else{
+            hani.setVisible(true);
+        }
         applyDarkMode(ThemeManager.darkModeActiveProperty().get());
         ThemeManager.darkModeActiveProperty().addListener((obs, oldVal, isDarkMode) -> {
             applyDarkMode(isDarkMode);

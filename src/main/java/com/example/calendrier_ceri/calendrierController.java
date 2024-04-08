@@ -201,7 +201,7 @@ public class calendrierController implements Initializable {
         return allActivities.stream()
                 .filter(activity -> matiere == null || matiere.isEmpty() || activity.getMatiere().contains(matiere))
                 .filter(activity -> groupe == null || groupe.isEmpty() || activity.getDescription().contains(groupe))
-                .filter(activity -> salle == null || salle.isEmpty() || activity.getLocation().contains(salle))
+                .filter(activity -> salle == null || salle.isEmpty() || activity.getDescription().contains(salle))
                 .filter(activity -> typeCours == null || typeCours.isEmpty() || activity.getSummary().contains(typeCours))
                 .collect(Collectors.toList());
     }
@@ -209,7 +209,7 @@ public class calendrierController implements Initializable {
     private boolean isMonthView = true;
     @FXML
     void ajouterEvenementAction(ActionEvent event) throws IOException {
-        showAddEventDialog();
+        showAddEventDialog1();
     }
 
     @FXML
@@ -323,6 +323,9 @@ public class calendrierController implements Initializable {
         for (CalendarActivity activity : activities) {
 
             if (activityCount < 2) {
+                if(activity.getMatiere()==null){
+                    activity.setMatiere("salle reserver");
+                }
                 String fullText = "   "+activity.getMatiere() + " " + activity.getSalle() + " " + activity.getStartDateTime();
                 Label activityLabel = new Label(fullText);
                 if (activity.isExam()) {
@@ -475,6 +478,9 @@ public class calendrierController implements Initializable {
                 VBox activityDetails = new VBox(5);
                 activityDetails.setPadding(new Insets(10));
                 activityDetails.setStyle("-fx-border-color: lightblue; -fx-border-width: 1; -fx-background-color: lightblue;");
+                if(activity.getMatiere().equals("")){
+                    activity.setMatiere("Salle Reserver");
+                }
                 Label matiere = new Label("Matière: " + activity.getMatiere());
                 Label enseignant = new Label("Enseignant: " + activity.getEnseignant());
                 enseignant.setOnMouseClicked(e -> {
@@ -519,7 +525,98 @@ public class calendrierController implements Initializable {
         }
     }
 
+    public void showAddEventDialog1() {
+        // Création du Stage (fenêtre)
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Ajouter un événement");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
 
+        // Création du GridPane pour organiser les composants de la fenêtre
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        // Ajout des composants (labels et textfields)
+        grid.add(new Label("Résumé:"), 0, 0);
+        TextField summaryField = new TextField();
+        grid.add(summaryField, 1, 0);
+
+        grid.add(new Label("Enseignant:"), 0, 1);
+        TextField teacherField = new TextField();
+        grid.add(teacherField, 1, 1);
+
+        grid.add(new Label("Matière:"), 0, 2);
+        TextField subjectField = new TextField();
+        grid.add(subjectField, 1, 2);
+
+        /*grid.add(new Label("Salle:"), 0, 3);
+        TextField roomField = new TextField();
+        grid.add(roomField, 1, 3);*/
+
+        grid.add(new Label("Description:"), 0, 4);
+        TextField descriptionField = new TextField();
+        grid.add(descriptionField, 1, 4);
+
+        grid.add(new Label("Lieu:"), 0, 5);
+        TextField locationField = new TextField();
+        grid.add(locationField, 1, 5);
+
+        grid.add(new Label("Date Debut:"), 0, 6);
+        TextField dateStart = new TextField();
+        grid.add(dateStart, 1, 6);
+
+        grid.add(new Label("Date Fin:"), 0, 7);
+        TextField fin = new TextField();
+        grid.add(fin, 1, 7);
+
+        grid.add(new Label("Examen:"), 0, 8);
+        CheckBox examCheckBox = new CheckBox();
+        grid.add(examCheckBox, 1, 8);
+
+        // Boutons Ajouter et Annuler
+        Button addButton = new Button("Ajouter");
+        Button cancelButton = new Button("Annuler");
+
+        HBox buttonsHBox = new HBox(10);
+        buttonsHBox.getChildren().addAll(addButton, cancelButton);
+        grid.add(buttonsHBox, 1, 9);
+
+        // Action pour le bouton Annuler
+        cancelButton.setOnAction(e -> dialogStage.close());
+
+        // Action pour le bouton Ajouter
+        addButton.setOnAction(e -> {
+            // Récupération des données saisies
+            String summary = summaryField.getText();
+            String teacher = teacherField.getText();
+            String subject = subjectField.getText();
+            //String room = roomField.getText();
+            String description = descriptionField.getText();
+            String location = locationField.getText();
+            String dateDebut =dateStart.getText();
+            String dateFin= fin.getText();
+            boolean isExam = examCheckBox.isSelected();
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault());
+
+
+            try {
+                ZonedDateTime startDateTime = ZonedDateTime.parse(dateDebut, formatter);
+                ZonedDateTime endDateTime = ZonedDateTime.parse(dateFin, formatter);
+
+
+                addEventToIcsFile("fichier_ics\\"+Connexion.pseudo+".ics", startDateTime, endDateTime, summary, location, description, teacher, location,isExam);
+                dialogStage.close();
+            } catch (DateTimeParseException ex) {
+                System.err.println("Format de date ou d'heure incorrect: " + ex.getMessage());
+            }
+        });
+
+        Scene scene = new Scene(grid);
+        dialogStage.setScene(scene);
+        dialogStage.showAndWait();
+    }
     public void showAddEventDialog() {
         // Création du Stage (fenêtre)
         Stage dialogStage = new Stage();
@@ -641,8 +738,8 @@ public class calendrierController implements Initializable {
                             "DTEND:" + dtEnd + "\r\n" +
                             "SUMMARY;LANGUAGE=fr:" + summary + " - " + enseignant + " - " + salle + " - TP\r\n" +
                             "LOCATION;LANGUAGE=fr:" + location + "\r\n" +
-                            "DESCRIPTION;LANGUAGE=fr:Matière : " + description + "\\nEnseignant : " + enseignant + "\\nSalle : " + salle + "\\nType : TP\\n\r\n" +
-                            "X-ALT-DESC;FMTTYPE=text/html:Matière : " + description + "<br/>Enseignant : " + enseignant + "<br/>Salle : " + salle + "<br/>Type : TP<br/>\r\n" +
+                            "DESCRIPTION;LANGUAGE=fr:Matière : " + description + "\\nEnseignant : " + enseignant + "\\nSalle : " + location + "\\nType : TP\\n\r\n" +
+                            "X-ALT-DESC;FMTTYPE=text/html:Matière : " + description + "<br/>Enseignant : " + enseignant + "<br/>Salle : " + location + "<br/>Type : TP<br/>\r\n" +
                             "ISEXAM:"+isExam+ "\r\n" +
                             "END:VEVENT\r\n";
 

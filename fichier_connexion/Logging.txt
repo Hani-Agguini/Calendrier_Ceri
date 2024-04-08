@@ -1,3 +1,2 @@
 ETD hani 2000 light
-ENS yelhan 3000 light
-ENS s s light
+ENS prof 3000 light
