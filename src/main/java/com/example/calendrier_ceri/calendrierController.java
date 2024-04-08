@@ -598,9 +598,14 @@ public class calendrierController implements Initializable {
                 ZonedDateTime startDateTime = ZonedDateTime.parse(dateDebut, formatter);
                 ZonedDateTime endDateTime = ZonedDateTime.parse(dateFin, formatter);
 
-
-                addEventToIcsFile("fichier_ics\\"+formationFileName, startDateTime, endDateTime, summary, location, description, teacher, room,isExam);
-                dialogStage.close();
+                // Vérifiez si la salle est libre
+                if (isSalleEtEnseignantLibres(room,teacher, startDateTime, endDateTime)) {
+                    addEventToIcsFile("fichier_ics\\"+formationFileName, startDateTime, endDateTime, summary, location, description, teacher, room, isExam);
+                    dialogStage.close();
+                } else {
+                    // Afficher une notification indiquant que la salle est déjà réservée
+                    showAlertSalleReservee();
+                }
             } catch (DateTimeParseException ex) {
                 System.err.println("Format de date ou d'heure incorrect: " + ex.getMessage());
             }
@@ -653,7 +658,34 @@ public class calendrierController implements Initializable {
         }
         return true;
     }
+    private boolean isSalleEtEnseignantLibres(String salle, String enseignant, ZonedDateTime debut, ZonedDateTime fin) {
+        for (CalendarActivity activite : allActivities) {
+            ZonedDateTime eventStart = activite.getStartDateTime();
+            ZonedDateTime eventEnd = activite.getEndDateTime();
 
+            // Vérifiez que les dates de début et de fin ne sont pas nulles
+            if (eventStart != null && eventEnd != null) {
+                boolean seChevauche = eventStart.isBefore(fin) && eventEnd.isAfter(debut);
+                boolean salleOccupee = activite.getSalle().equals(salle) && seChevauche;
+                boolean enseignantOccupe = activite.getEnseignant().equals(enseignant) && seChevauche;
+
+                if (salleOccupee || enseignantOccupe) {
+                    return false; // La salle ou l'enseignant n'est pas libre
+                }
+            } else {
+                // Gérez le cas où eventStart ou eventEnd est null, selon vos besoins
+                // Par exemple, vous pouvez choisir de considérer que l'activité n'occupe pas de créneau si elle n'a pas de dates de début et de fin définies
+            }
+        }
+        return true; // La salle et l'enseignant sont libres
+    }
+    private void showAlertSalleReservee() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Salle Réservée");
+        alert.setHeaderText(null);
+        alert.setContentText("La salle est déjà réservée à l'horaire sélectionné.");
+        alert.showAndWait();
+    }
 
 
 

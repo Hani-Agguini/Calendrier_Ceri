@@ -23,7 +23,7 @@
 
     <HBox alignment="CENTER" layoutY="70.0" prefHeight="38.0" prefWidth="774.0" spacing="5.0" styleClass="label">
         <children>
-            <Button fx:id="reserversalle" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" text="Button" onAction="#reserversalle" visible="false"/>
+         <Button fx:id="reserversalle" mnemonicParsing="false" onAction="#reserversalle" prefHeight="36.0" prefWidth="150.0" text="Reserver salle" visible="false" />
             <Button mnemonicParsing="false" onAction="#showWeekView" prefHeight="29.0" prefWidth="103.0" text="Semaine" />
             <Button mnemonicParsing="false" onAction="#back" text="&lt;" />
             <Label fx:id="year" text="####">
