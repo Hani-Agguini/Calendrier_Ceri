@@ -54,7 +54,6 @@ public class PageAcceuilController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("choix_Formations.fxml"));
             Parent root = loader.load();
             choix_Formations controller = loader.getController();
-            controller.isProf=isProf;
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             double width = stage.getWidth();
             double height = stage.getHeight();

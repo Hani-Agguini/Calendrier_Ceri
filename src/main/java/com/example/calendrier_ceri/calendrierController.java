@@ -59,6 +59,8 @@ public class calendrierController implements Initializable {
 
     ZonedDateTime dateFocus;
     ZonedDateTime today;
+
+    static boolean prof =false;
     @FXML
     private ComboBox<String> comboMatiere;
     @FXML
@@ -670,11 +672,10 @@ public class calendrierController implements Initializable {
                 boolean enseignantOccupe = activite.getEnseignant().equals(enseignant) && seChevauche;
 
                 if (salleOccupee || enseignantOccupe) {
-                    return false; // La salle ou l'enseignant n'est pas libre
+                    return false;
                 }
             } else {
-                // Gérez le cas où eventStart ou eventEnd est null, selon vos besoins
-                // Par exemple, vous pouvez choisir de considérer que l'activité n'occupe pas de créneau si elle n'a pas de dates de début et de fin définies
+
             }
         }
         return true; // La salle et l'enseignant sont libres

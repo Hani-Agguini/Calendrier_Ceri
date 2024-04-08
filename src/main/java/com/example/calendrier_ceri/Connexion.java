@@ -8,12 +8,15 @@ import java.util.Scanner;
 
 public class Connexion {
     static String pseudo="";
+    static Boolean prof=false;
     private static class Utilisateur {
         String type;
         String pseudo;
         String motDePasse;
 
         String mode_pref="light";
+
+
 
         Utilisateur(String type, String pseudo, String motDePasse, String mode_pref) {
             this.type = type;
@@ -63,7 +66,9 @@ public class Connexion {
         List<Utilisateur> utilisateurs = lire_fichier("logging.txt");
         for (Utilisateur utilisateur : utilisateurs) {
             if (utilisateur.pseudo.equals(pseudo) && utilisateur.motDePasse.equals(motDePasse) && utilisateur.type.equals("ENS")) {
+
                 System.out.println("Connexion réussie pour un prof.");
+                Connexion.prof=true;
                 return true;
             }
         }
