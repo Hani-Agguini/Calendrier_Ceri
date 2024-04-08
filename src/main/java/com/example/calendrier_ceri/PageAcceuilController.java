@@ -57,7 +57,7 @@ public class PageAcceuilController implements Initializable {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             double width = stage.getWidth();
             double height = stage.getHeight();
-            Scene choixView = new Scene(root, width, height);
+            Scene choixView = new Scene(root, Mainapp.dim1, Mainapp.dim2);
             // Appliquer la nouvelle scène au stage (fenêtre) existant sans changer la taille
             stage.setScene(choixView);
             stage.show();
